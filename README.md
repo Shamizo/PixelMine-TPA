@@ -1,6 +1,6 @@
-# 这分支改了啥？  
-- 修了 RTP 在 Folia 上抽风的问题  
-- 加了 `/tphere`、`/tpaall`、`/back` 死后弹窗（感谢HuskHomes）  
+# 这分支改了什么？  
+- 修复rtp在folia服务端上线程不安全问题 修复rtp在地狱会传送至基岩顶 修复rtp会传送至世界边界外导致玩家卡死
+- 加了 `/tphere`、`/tpaall`、`/back` 死后弹窗（思路来源于HuskHomes）  
 - 支持从 HuskHomes（Sqlite H2）导数据过来 /tpa migrate
 - 将yml存数据办法改为了SQLite(WAL) 
 - 为每一个功能添加了一个禁用世界的配置选项
@@ -16,7 +16,7 @@ This plugin uses [FoliaLib](https://github.com/handyplus/FoliaLib) for **Folia**
 - [LFWQSP2641](https://github.com/LFWQSP2641)
 - [sky-3311](https://github.com/sky-3311)
 - [Ukiyograin](https://github.com/Ukiyograin)
-
+- Shamizo 神秘的
 ### Bug Reporters
 - [fanlepian1](https://github.com/fanlepian1)
 - [Apleax](https://github.com/Apleax)
