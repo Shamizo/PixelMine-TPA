@@ -4,7 +4,7 @@
 # Basic Configuration
 #=======================
 prefix: "&a&l> "
-console_prefix: "&7&l[TPA] "
+console_prefix: "&7&l[PMS-TPA] "
 not_online_players: "Không có người chơi nào online"
 not_warps: "Không có warp nào"
 not_homes: "Không có nhà nào"
@@ -43,6 +43,7 @@ request.to_here: "&a&lNgười chơi &6&l<target>&a&l muốn dịch chuyển đ�
 request.to_target: "&a&lNgười chơi &6&l<target>&a&l mời bạn đến vị trí của họ! Hết hạn sau &6&l<seconds>&a&l giây!"
 request.sent_success: "&a&lĐã gửi yêu cầu đến &6&l<target>&a&l!"
 request.timeout_notice: "&a&lYêu cầu có hiệu lực trong &6&l<seconds>&a&l giây!"
+request.tpaall_sent: "&a&lĐã gửi yêu cầu dịch chuyển tới &6&l<target> &a&lngười chơi trực tuyến, chờ chấp nhận!"
 request.expired_from: "&c&lYêu cầu từ &6&l<target>&c&l đã hết hạn!"
 request.expired_to: "&c&lYêu cầu của bạn đến &6&l<target>&c&l đã hết hạn!"
 
@@ -76,6 +77,9 @@ spawn.teleport_success: "&a&lĐã dịch chuyển đến spawn!"
 # Last Location
 #=======================
 back.teleport_success: "&a&lĐã dịch chuyển về vị trí trước!"
+back.death_message: "&a&lQuay lại nơi bạn chết?"
+back.death_return_button: "&a&l[⏪ Quay lại]"
+back.death_click_hint: "&a&lBấm để quay lại nơi bạn chết"
 
 #=======================
 # Random Teleport
@@ -159,6 +163,8 @@ teleport.generic_success: "&a&lĐã dịch chuyển đến &6&l<target>"
 teleport.tpall.to_target: "&a&lAdmin đã dịch chuyển bạn đến &6&l<target>"
 teleport.tpall.to_self: "&a&lAdmin đã dịch chuyển tất cả người chơi đến bạn"
 teleport.tpall.success: "&a&lĐã dịch chuyển tất cả người chơi đến &6&l<target>"
+teleport.tphere.success: "&a&lForce-teleported &6&l<target> &a&l to you"
+blacklist.clear_success: "&a&lYour blacklist has been cleared!"
 teleport.logout_location: "&a&lĐã dịch chuyển đến vị trí đăng xuất của &6&l<target>"
 
 #=======================
@@ -168,13 +174,24 @@ system.config_reloaded: "&a&lĐã tải lại config!"
 system.plugin_loaded: "&a&lPlugin đã bật! Phiên bản: &6&l<target>"
 system.plugin_unloaded: "&c&lPlugin đã tắt!"
 system.config_migrated_success: "&a&lĐã chuyển đổi config xong!"
+migration:
+  title: "&6&l=========== Hướng dẫn di chuyển dữ liệu PMS-TPA ==========="
+  step1: "&a&l1. Đặt tệp cơ sở dữ liệu HuskHomes vào plugins/PMS-TPA/data/"
+  step1_sqlite: "&a&l   - Tệp cơ sở dữ liệu SQLite: HuskHomesData.db"
+  step1_h2: "&a&l   - Tệp cơ sở dữ liệu H2: HuskHomesData.h2.mv.db hoặc HuskHomesData.h2.db"
+  step2: "&a&l2. Nếu tệp vẫn ở plugins/HuskHomes/, plugin sẽ tự động phát hiện"
+  step3: "&a&l3. Nhập lại /tpa migrate để bắt đầu di chuyển dữ liệu"
+  step4: "&a&l4. Sau khi hoàn tất có thể xóa tệp cơ sở dữ liệu"
+  notice: "&e&lLưu ý: dữ liệu chỉ được nhập khi dữ liệu PMS-TPA trống; dữ liệu hiện có sẽ không bị ghi đè"
+  start: "&a&lBắt đầu di chuyển từ tệp cơ sở dữ liệu HuskHomes: <target>"
+  no_file: "&e&lKhông tìm thấy tệp cơ sở dữ liệu HuskHomes. Hãy đặt tệp trước theo hướng dẫn!"
+  done_homes: "&a&lĐã nhập dữ liệu nhà: &6&l<target>"
+  done_warps: "&a&lĐã nhập dữ liệu warp: &6&l<target>"
+  done_back: "&a&lĐã nhập điểm quay lại sau chết: &6&l<target>"
+  finish: "&a&lDi chuyển dữ liệu hoàn tất!"
+  error: "&c&lDi chuyển dữ liệu thất bại: <message>"
 system.config_migrated: "&a&lĐang chuyển đổi config cũ (đã tạo bản backup)"
 system.debug_warning: "&c&lChế độ debug đang bật - hãy tắt sau khi dùng xong!"
 
 #=======================
 # Updates
-#=======================
-update.checking: "&a&lĐang kiểm tra cập nhật..."
-update.available: "&a&lPhiên bản mới: &6&lTPA-v<target>&a&l tại&6&l https://modrinth.com/plugin/tpa.66666/versions"
-update.latest: "&a&lĐang dùng phiên bản mới nhất"
-update.failed: "&c&lKiểm tra cập nhật thất bại!"

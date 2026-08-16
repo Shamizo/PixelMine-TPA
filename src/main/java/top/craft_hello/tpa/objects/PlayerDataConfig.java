@@ -6,80 +6,84 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.checkerframework.checker.units.qual.C;
-import top.craft_hello.tpa.abstracts.ErrorException;
-import top.craft_hello.tpa.utils.SendMessageUtil;
 import top.craft_hello.tpa.abstracts.Configuration;
 import top.craft_hello.tpa.enums.PermissionType;
 import top.craft_hello.tpa.exceptions.*;
+import top.craft_hello.tpa.utils.SendMessageUtil;
+import top.craft_hello.tpa.utils.SQLiteUtil;
 
-import java.io.File;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static java.util.Objects.isNull;
 import static top.craft_hello.tpa.utils.LoadingConfigUtil.getConfig;
 
-public class PlayerDataConfig extends Configuration {
+public class PlayerDataConfig {
     private static final Map<UUID, PlayerDataConfig> PLAYER_DATAS = new ConcurrentHashMap<>();
+    private UUID playerUUID;
     private Player player;
     private String playerName;
     private String defaultHomeName;
     private boolean setlang;
     private final Map<String, Location> HOMES = new ConcurrentHashMap<>();
     private List<String> denyList = new ArrayList<>();
-    private UUID playerUUID;
     private Location lastLocation;
     private Location logoutLocation;
+    protected String languageStr;
+    private HandyRunnable loadPlayerTimer;
 
     public PlayerDataConfig(UUID playerUUID){
-        this(new File(PLUGIN.getDataFolder(), "playerdata/" + playerUUID.toString() + ".yml"));
-    }
-
-    public PlayerDataConfig(String playerName){
-        this(new File(PLUGIN.getDataFolder(), "playerdata/" + Bukkit.getOfflinePlayer(playerName).getUniqueId() + ".yml"), playerName);
-    }
-
-    public PlayerDataConfig(File configurationFile) {
-        this(configurationFile, null);
-    }
-
-    public PlayerDataConfig(File configurationFile, String playerName) {
-        this.playerName = playerName;
-        if (isNull(configurationFile)) return;
-        this.configurationFile = configurationFile;
-        String fileName = configurationFile.getName().replace(".yml", "");
-        if (!fileName.matches("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")) return;
-        this.playerUUID = UUID.fromString(fileName);
+        if (isNull(playerUUID)) return;
+        this.playerUUID = playerUUID;
         if (PlayerDataConfig.containsPlayerData(playerUUID)) return;
-        loadConfiguration(false);
-        if (isNull(configuration)) return;
-        if (updateConfiguration) {
-            updateConfiguration();
-            return;
-        }
         loadConfiguration();
         PLAYER_DATAS.put(playerUUID, this);
     }
 
-    @Override
-    protected void loadConfiguration(boolean isReplace){
-        if (isReplace || !configurationFile.exists()){
-            ErrorException.tryCreateConfiguration(Bukkit.getConsoleSender(), configurationFile);
-            configuration = YamlConfiguration.loadConfiguration(configurationFile);
-            configuration.set("player_name", Bukkit.getOfflinePlayer(playerUUID).getName());
-            configuration.set("language", getConfig().getDefaultLanguageStr());
-            configuration.set("setlang", false);
-            saveConfiguration(null);
-        }
-        configuration = YamlConfiguration.loadConfiguration(configurationFile);
+    public PlayerDataConfig(String playerName){
+        this(Bukkit.getOfflinePlayer(playerName).getUniqueId());
     }
 
     private void loadConfiguration(){
-        HandyRunnable loadPlayerTimer = new HandyRunnable() {
+        Map<String, Object> data = SQLiteUtil.loadPlayerDataRow(playerUUID);
+        if (isNull(data)) {
+            playerName = getOfflinePlayerName();
+            languageStr = getConfig().getDefaultLanguageStr();
+            setlang = false;
+            defaultHomeName = null;
+            lastLocation = null;
+            logoutLocation = null;
+            denyList = new ArrayList<>();
+            SQLiteUtil.insertOrUpdatePlayerData(playerUUID, playerName, languageStr, setlang, defaultHomeName, lastLocation, logoutLocation, denyList);
+        } else {
+            playerName = (String) data.get("player_name");
+            if (isNull(playerName)) playerName = getOfflinePlayerName();
+            languageStr = (String) data.get("language");
+            if (isNull(languageStr)) languageStr = getConfig().getDefaultLanguageStr();
+            setlang = (Boolean) data.get("setlang");
+            defaultHomeName = (String) data.get("default_home");
+            lastLocation = (Location) data.get("last_location");
+            logoutLocation = (Location) data.get("logout_location");
+            denyList = (List<String>) data.get("deny_list");
+            if (isNull(denyList)) denyList = new ArrayList<>();
+            HOMES.putAll(SQLiteUtil.loadHomes(playerUUID));
+        }
+        startLoadPlayerTimer();
+    }
+
+    private String getOfflinePlayerName(){
+        try {
+            String name = Bukkit.getOfflinePlayer(playerUUID).getName();
+            return isNull(name) ? playerUUID.toString() : name;
+        } catch (Exception ignored) {
+            return playerUUID.toString();
+        }
+    }
+
+    private void startLoadPlayerTimer(){
+        if (!isNull(loadPlayerTimer)) loadPlayerTimer.cancel();
+        loadPlayerTimer = new HandyRunnable() {
             long sec = 200;
             @Override
             public void run() {
@@ -97,109 +101,14 @@ public class PlayerDataConfig extends Configuration {
             }
         };
         HandySchedulerUtil.runTaskTimerAsynchronously(loadPlayerTimer, 0, 1);
-        this.playerName = configuration.getString("player_name");
-        this.languageStr = configuration.getString("language");
-        this.defaultHomeName = configuration.getString("default_home");
-        this.setlang =  configuration.getBoolean("setlang");
-        Set<String> homeSet = configuration.getKeys(true);
-        for (String homeName : homeSet) {
-            if (homeName.contains("homes.")) {
-                String homeName2 = homeName.substring(homeName.indexOf(".") + 1);
-                if (!homeName2.contains(".")) {
-                    Location location = loadLocation(homeName);
-                    if (isNull(location)) continue;
-                    HOMES.put(homeName2, location);
-                }
-            }
-        }
-        this.denyList = configuration.getStringList("deny_list");
-        Location location = loadLocation("last_location");
-        if (!isNull(location)) this.lastLocation = location;
-
-        location = loadLocation("logout_location");
-        if (!isNull(location)) this.logoutLocation = location;
     }
 
-    private void updateConfiguration() {
-        switch (configVersion){
-            case "3.1.3":
-            case "3.1.2":
-            case "3.1.1":
-            case "3.1.0":
-                configurationFile.renameTo(new File(PLUGIN.getDataFolder(), "backup/" + configVersion + "/playerdata/" + configurationFile.getName()));
-                configuration.set("language", configuration.getString("lang"));
-                configuration.set("lang", null);
-                configuration.set("home_amount", null);
-                configuration.set("denys_amount", null);
-                if (configuration.contains("denys")) {
-                    Set<String> denysSet = configuration.getKeys(true);
-                    for (String deny : denysSet) {
-                        if (deny.contains("denys.")) {
-                            String playerUUID = deny.substring(deny.indexOf(".") + 1);
-                            if (!playerUUID.contains(".")) denyList.add(playerUUID);
-                        }
-                    }
-                    configuration.set("deny_list", denyList);
-                }
-                configuration.set("denys", null);
-                break;
-            case "3.0.0":
-                configuration.set("lang", null);
-                configuration.set("language", getConfig().getDefaultLanguageStr());
-
-                File homeFile = new File(PLUGIN.getDataFolder(), "home.yml");
-                File oldHomeFile = new File(PLUGIN.getDataFolder(), "backup/" + configVersion + "/" + homeFile.getName());
-                if (homeFile.exists()) {
-                    homeFile.renameTo(oldHomeFile);
-                    homeFile.delete();
-                }
-
-                if (oldHomeFile.exists()){
-                    FileConfiguration oldHomes = YamlConfiguration.loadConfiguration(oldHomeFile);
-                    Set<String> homeSet = oldHomes.getKeys(true);
-                    for (String homeName : homeSet) {
-                        if (homeName.contains(playerName + ".")) {
-                            String homeName2 = homeName.substring(homeName.indexOf(".") + 1);
-                            if (!homeName2.contains(".")) {
-                                Location location = oldHomes.getLocation(playerName + "." + homeName2);
-                                if (isNull(location)) continue;
-                                if (isNull(defaultHomeName)) configuration.set("default_home", homeName2);
-                                HOMES.put(homeName2, location);
-                                loadLocation(homeName);
-                            }
-                        }
-                    }
-                    if (HOMES.isEmpty()) return;
-                    for (Map.Entry<String, Location> locationMap : HOMES.entrySet()){
-                        setLocation("homes." + locationMap.getKey(), locationMap.getValue());
-                    }
-                }
-
-                File lastLocationFile = new File(PLUGIN.getDataFolder(), "last_location.yml");
-                File oldLastLocationFile = new File(PLUGIN.getDataFolder(), "backup/" + configVersion + "/" + lastLocationFile.getName());
-                if (lastLocationFile.exists()) {
-                    lastLocationFile.renameTo(oldLastLocationFile);
-                    lastLocationFile.delete();
-                }
-
-                if (oldLastLocationFile.exists()) {
-                    FileConfiguration oldLastLocation = YamlConfiguration.loadConfiguration(oldLastLocationFile);
-                    if (oldLastLocation.contains(playerName)) {
-                        lastLocation = oldLastLocation.getLocation(playerName);
-                        if (isNull(lastLocation)) break;
-                        setLocation("last_location", lastLocation);
-                    }
-                }
-                break;
-            default:
-                return;
-        }
-        saveConfiguration(null);
+    private void save(){
+        SQLiteUtil.insertOrUpdatePlayerData(playerUUID, playerName, languageStr, setlang, defaultHomeName, lastLocation, logoutLocation, denyList);
     }
 
-    @Override
     public void reloadConfiguration(){
-        loadConfiguration(false);
+        HOMES.clear();
         loadConfiguration();
     }
 
@@ -208,26 +117,10 @@ public class PlayerDataConfig extends Configuration {
     }
 
     public static void loadAllPlayerData() {
-        File oldHomeFile = new File(PLUGIN.getDataFolder(), "home.yml");
-        if (oldHomeFile.exists()) {
-            FileConfiguration oldHome = YamlConfiguration.loadConfiguration(oldHomeFile);
-            Set<String> playerNames = oldHome.getKeys(false);
-            for (String playerName : playerNames) getPlayerData(playerName);
-        }
-
-        File oldLastLocationFile = new File(PLUGIN.getDataFolder(), "last_location.yml");
-        if (oldLastLocationFile.exists()) {
-            FileConfiguration oldLastLocation = YamlConfiguration.loadConfiguration(oldLastLocationFile);
-            Set<String> playerNames = oldLastLocation.getKeys(false);
-            for (String playerName : playerNames) getPlayerData(playerName);
-        }
-
         Configuration.offUpdateConfiguration();
-
-        File playerDataFolder = new File(PLUGIN.getDataFolder(),"/playerdata");
-        File[] files = playerDataFolder.listFiles();
-        if (!isNull(files)) for (File file : files) new PlayerDataConfig(file);
-
+        for (UUID playerUUID : SQLiteUtil.getAllPlayerUUIDs()) {
+            new PlayerDataConfig(playerUUID);
+        }
     }
 
     public static PlayerDataConfig getPlayerData(UUID playerUUID) {
@@ -237,7 +130,9 @@ public class PlayerDataConfig extends Configuration {
 
     public static PlayerDataConfig getPlayerData(Player player) {
         UUID playerUUID = player.getUniqueId();
-        return getPlayerData(playerUUID);
+        PlayerDataConfig playerDataConfig = getPlayerData(playerUUID);
+        if (!isNull(playerDataConfig)) playerDataConfig.player = player;
+        return playerDataConfig;
     }
 
     public static PlayerDataConfig getPlayerData(OfflinePlayer offlinePlayer) {
@@ -247,6 +142,10 @@ public class PlayerDataConfig extends Configuration {
 
     public static PlayerDataConfig getPlayerData(String playerName) {
         UUID playerUUID = Bukkit.getPlayerUniqueId(playerName);
+        if (isNull(playerUUID)) {
+            new PlayerDataConfig(playerName);
+            return PLAYER_DATAS.get(Bukkit.getOfflinePlayer(playerName).getUniqueId());
+        }
         if (!containsPlayerData(playerUUID)) new PlayerDataConfig(playerName);
         return PLAYER_DATAS.get(playerUUID);
     }
@@ -262,7 +161,12 @@ public class PlayerDataConfig extends Configuration {
     }
 
     public static void removePlayerData(UUID playerUUID) {
-        PLAYER_DATAS.remove(playerUUID);
+        PlayerDataConfig playerDataConfig = PLAYER_DATAS.remove(playerUUID);
+        if (!isNull(playerDataConfig)) playerDataConfig.cancelLoadPlayerTimer();
+    }
+
+    private void cancelLoadPlayerTimer() {
+        if (!isNull(loadPlayerTimer)) loadPlayerTimer.cancel();
     }
 
     public static void removePlayerData(Player player) {
@@ -276,10 +180,9 @@ public class PlayerDataConfig extends Configuration {
     }
 
     public void updatePlayerName(String playerName) {
-        if (!this.playerName.equals(playerName)) return;
-        configuration.set("playerName", playerName);
-        saveConfiguration(null);
-        reloadConfiguration();
+        if (isNull(playerName) || playerName.equals(this.playerName)) return;
+        this.playerName = playerName;
+        save();
     }
 
     public String getLanguageStr() {
@@ -313,12 +216,14 @@ public class PlayerDataConfig extends Configuration {
     }
 
     public void checkHomeAmountIsMax()  {
-        if (isNull(player) || !player.isOnline()) throw new ErrorTargetOfflineException(null, "null");
-        PermissionType permissionType = getPermissionType(player);
+        Player onlinePlayer = player;
+        if (isNull(onlinePlayer) || !onlinePlayer.isOnline()) onlinePlayer = Bukkit.getPlayer(playerUUID);
+        if (isNull(onlinePlayer) || !onlinePlayer.isOnline()) throw new ErrorTargetOfflineException(null, "null");
+        PermissionType permissionType = getPermissionType(onlinePlayer);
         int homeAmount = HOMES.size();
         int maxHomeAmount = getConfig().getHomeAmountMax(permissionType);
         if (maxHomeAmount < 1) return;
-        if (homeAmount >= maxHomeAmount) throw new HomeMaxLimitErrorException(player, maxHomeAmount);
+        if (homeAmount >= maxHomeAmount) throw new HomeMaxLimitErrorException(onlinePlayer, maxHomeAmount);
     }
 
     public Location getHomeLocation()  {
@@ -353,7 +258,6 @@ public class PlayerDataConfig extends Configuration {
         return denyList.contains(playerUUID);
     }
 
-
     public void checkIsNoDeny(String playerUUID, Player executor)  {
         if (!isDeny(playerUUID)) throw new ErrorNotBlacklistedException(executor);
     }
@@ -366,21 +270,20 @@ public class PlayerDataConfig extends Configuration {
     public void addDeny(String playerUUID) {
         if (isDeny(playerUUID)) return;
         denyList.add(playerUUID);
-        configuration.set("deny_list", denyList);
-        saveConfiguration(null);
+        save();
     }
 
     public void delDeny(String playerUUID) {
         if (!isDeny(playerUUID)) return;
         denyList.remove(playerUUID);
-        configuration.set("deny_list", denyList);
-        if (denyList.isEmpty()) {
-            configuration.set("deny_list", null);
-        }
-
-        saveConfiguration(null);
+        save();
     }
 
+    public void clearDenyList() {
+        if (denyList.isEmpty()) return;
+        denyList.clear();
+        save();
+    }
 
     public boolean equalsLanguageStr(String languageStr) {
         if (isNull(languageStr) || isNull(this.languageStr)) return false;
@@ -393,15 +296,13 @@ public class PlayerDataConfig extends Configuration {
 
     public void setSetlang(boolean setlang) {
         this.setlang = setlang;
-        configuration.set("setlang", setlang);
-        saveConfiguration(null);
+        save();
     }
 
     public void setLanguage(String languageStr) {
         if (isNull(languageStr) || equalsLanguageStr(languageStr)) return;
-        this.languageStr = formatLangStr(languageStr);
-        configuration.set("language", this.languageStr);
-        saveConfiguration(null);
+        this.languageStr = Configuration.formatLangStr(languageStr);
+        save();
         SendMessageUtil.setLangCommandSuccess(player, this.languageStr);
     }
 
@@ -411,7 +312,7 @@ public class PlayerDataConfig extends Configuration {
             if (homeName.equalsIgnoreCase(defaultHomeName)) throw new ErrorDefaultHomeAlreadySetException(player, homeName);
         }
         defaultHomeName = homeName;
-        configuration.set("default_home", defaultHomeName);
+        save();
         SendMessageUtil.setDefaultHomeSuccess(player, homeName);
     }
 
@@ -423,10 +324,9 @@ public class PlayerDataConfig extends Configuration {
             setDefaultHomeName(defaultHomeName, true);
         }
         HOMES.put(defaultHomeName, location);
-        setLocation("homes." + defaultHomeName, location);
-        saveConfiguration(null);
+        SQLiteUtil.insertOrUpdateHome(playerUUID, defaultHomeName, location);
+        save();
         SendMessageUtil.setHomeSuccess(player, defaultHomeName);
-        //setHomeLocation(defaultHomeName, location);
     }
 
     public void setHomeLocation(String homeName, Location location)  {
@@ -437,8 +337,8 @@ public class PlayerDataConfig extends Configuration {
             setDefaultHomeName(defaultHomeName, true);
         }
         HOMES.put(homeName, location);
-        setLocation("homes." + homeName, location);
-        saveConfiguration(null);
+        SQLiteUtil.insertOrUpdateHome(playerUUID, homeName, location);
+        save();
         SendMessageUtil.setHomeSuccess(player, homeName);
     }
 
@@ -446,20 +346,18 @@ public class PlayerDataConfig extends Configuration {
         if (containsHomeLocation(homeName)) {
             HOMES.remove(homeName);
             defaultHomeName = null;
-            configuration.set("homes." + homeName, null);
+            SQLiteUtil.deleteHome(playerUUID, homeName);
             if (HOMES.isEmpty()) {
-                configuration.set("homes", null);
-                configuration.set("default_home", null);
+                save();
             } else {
                 for (Map.Entry<String, Location> homeMap : HOMES.entrySet()) {
                     if (isNull(defaultHomeName)) {
                         defaultHomeName = homeMap.getKey();
-                        configuration.set("default_home", defaultHomeName);
                         break;
                     }
                 }
+                save();
             }
-            saveConfiguration(null);
             SendMessageUtil.delHomeSuccess(player, homeName);
             return;
         }
@@ -469,15 +367,13 @@ public class PlayerDataConfig extends Configuration {
     public void setLastLocation(Location location) {
         if (isNull(location)) return;
         lastLocation = location;
-        setLocation("last_location", location);
-        saveConfiguration(null);
+        save();
     }
 
     public void setLogoutLocation(Location location) {
         if (isNull(location)) return;
         logoutLocation = location;
-        setLocation("logout_location", location);
-        saveConfiguration(null);
+        save();
     }
 
     public List<String> getHomeNameList(CommandSender sender)  {

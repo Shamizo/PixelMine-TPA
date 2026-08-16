@@ -1,4 +1,4 @@
-## TPA 插件配置文件
+## PMS-TPA 插件配置文件
 ## Github：https://github.com/WarSkyGod/TPA
 
 # 插件版本，请勿自行修改
@@ -11,10 +11,6 @@ language: zh_CN
 # 开启后将在后台显示详细的报错信息以便提供给开发者排错
 # 如果没有任何问题请勿开启，会在后台产生大量垃圾信息
 debug: false
-
-# 插件更新检查
-# 关闭后服务器后台和拥有 tpa.version 或 tpa.admin 权限的玩家将不会收到插件更新提醒
-update_check: true
 
 # 是否每次进入服务器或死亡都强制传送到 spawn
 force_spawn: true
@@ -98,22 +94,47 @@ delay:
 # tpa 命令设置
 tpa:
   # 是否开启 tpa 命令
-  # 如果 tpa 和 tphere 命令都未启用，将自动关闭 /tpaccept，/tpdeny，/denys 命令
+  # 如果 tpa 和 tpahere 命令都未启用，将自动关闭 /tpaccept，/tpdeny，/denys 命令
   enable: true
 
   # 是否检测权限
   # permission: tpa.tpa
   permission: false
 
-# tphere 命令设置
-tphere:
-  # 是否开启 tphere 命令
-  # 如果 tpa 和 tphere 命令都未启用，将自动关闭 /tpaccept，/tpdeny，/denys 命令
+  # 在哪些世界无法使用该命令
+  disable_worlds:
+    - disableWorld1
+    - disableWorld2
+
+# tpahere 命令设置
+tpahere:
+  # 是否开启 tpahere 命令
+  # 如果 tpa 和 tpahere 命令都未启用，将自动关闭 /tpaccept，/tpdeny，/denys 命令
   enable: true
 
   # 是否检测权限
-  # permission: tpa.tphere
+  # permission: tpa.tpahere
   permission: false
+
+  # 在哪些世界无法使用该命令
+  disable_worlds:
+    - disableWorld1
+    - disableWorld2
+
+# tpaall 命令设置
+tpaall:
+  # 是否开启 tpaall 命令
+  # 向所有在线玩家发送传送请求，对方可自行接受或拒绝
+  enable: true
+
+  # 是否检测权限
+  # permission: tpa.tpaall
+  permission: false
+
+  # 在哪些世界无法使用该命令
+  disable_worlds:
+    - disableWorld1
+    - disableWorld2
 
 # denys 命令设置
 denys:
@@ -152,6 +173,11 @@ warp:
   # permission: tpa.warp
   permission: false
 
+  # 在哪些世界无法使用该命令
+  disable_worlds:
+    - disableWorld1
+    - disableWorld2
+
 # home 命令设置
 home:
   # 是否开启 home 命令
@@ -161,6 +187,11 @@ home:
   # 是否检测权限
   # permission: tpa.home
   permission: false
+
+  # 在哪些世界无法使用该命令
+  disable_worlds:
+    - disableWorld1
+    - disableWorld2
 
   # 最大可设置多少个家（-1为不限制）
   amount:
@@ -195,6 +226,11 @@ spawn:
   # permission: tpa.spawn
   permission: false
 
+  # 在哪些世界无法使用该命令
+  disable_worlds:
+    - disableWorld1
+    - disableWorld2
+
 # back 命令设置
 back:
   # 是否开启 back 命令
@@ -203,3 +239,11 @@ back:
   # 是否检测权限
   # permission: tpa.back
   permission: false
+
+  # 在哪些世界无法使用该命令
+  disable_worlds:
+    - disableWorld1
+    - disableWorld2
+
+  # 玩家死亡后是否在聊天栏发送可点击消息，点击即可返回死亡点
+  death_message: true

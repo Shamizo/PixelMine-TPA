@@ -4,7 +4,7 @@
 # Основные настройки
 #=======================
 prefix: "&a&l> "
-console_prefix: "&7&l[TPA] "
+console_prefix: "&7&l[PMS-TPA] "
 not_online_players: "Нет игроков онлайн"
 not_warps: "Нет доступных точек телепортации"
 not_homes: "Нет доступных домов"
@@ -43,6 +43,7 @@ request.to_here: "&a&lИгрок &6&l<target> &a&lхочет телепорти�
 request.to_target: "&a&lИгрок &6&l<target> &a&lприглашает вас! (Истекает через &6&l<seconds>&a&l сек)"
 request.sent_success: "&a&lЗапрос отправлен игроку &6&l<target>&a&l!"
 request.timeout_notice: "&a&lДействителен &6&l<seconds>&a&l секунд"
+request.tpaall_sent: "&a&lЗапросы на телепортацию отправлены &6&l<target> &a&lигрокам, ожидается их подтверждение!"
 request.expired_from: "&c&lЗапрос от &6&l<target>&c&l истёк!"
 request.expired_to: "&c&lВаш запрос к &6&l<target>&c&l истёк!"
 
@@ -76,6 +77,9 @@ spawn.teleport_success: "&a&lТелепортирован в главный го
 # Последняя позиция
 #=======================
 back.teleport_success: "&a&lТелепортирован к предыдущей позиции!"
+back.death_message: "&a&lВернуться на место смерти?"
+back.death_return_button: "&a&l[⏪ Вернуться]"
+back.death_click_hint: "&a&lНажмите, чтобы вернуться на место смерти"
 
 #=======================
 # Случайный телепорт
@@ -159,6 +163,8 @@ teleport.generic_success: "&a&lТелепортирован к &6&l<target>"
 teleport.tpall.to_target: "&a&lАдминистратор телепортировал вас к &6&l<target>"
 teleport.tpall.to_self: "&a&lАдминистратор переместил всех игроков к вам"
 teleport.tpall.success: "&a&lВсе игроки телепортированы к &6&l<target>"
+teleport.tphere.success: "&a&lForce-teleported &6&l<target> &a&l to you"
+blacklist.clear_success: "&a&lYour blacklist has been cleared!"
 teleport.logout_location: "&a&lТелепортирован к последней точке выхода &6&l<target>"
 
 #=======================
@@ -168,13 +174,24 @@ system.config_reloaded: "&a&lКонфиг перезагружен!"
 system.plugin_loaded: "&a&lПлагин загружен! Версия: &6&l<target>"
 system.plugin_unloaded: "&c&lПлагин выгружен!"
 system.config_migrated_success: "&a&lМиграция конфига завершена!"
+migration:
+  title: "&6&l=========== Учебник по миграции данных PMS-TPA ==========="
+  step1: "&a&l1. Поместите файл базы данных HuskHomes в plugins/PMS-TPA/data/"
+  step1_sqlite: "&a&l   - Файл базы данных SQLite: HuskHomesData.db"
+  step1_h2: "&a&l   - Файл базы данных H2: HuskHomesData.h2.mv.db или HuskHomesData.h2.db"
+  step2: "&a&l2. Если файл всё ещё в plugins/HuskHomes/, он будет найден автоматически"
+  step3: "&a&l3. Введите /tpa migrate снова, чтобы начать миграцию"
+  step4: "&a&l4. После завершения файл базы данных можно удалить"
+  notice: "&e&lПримечание: данные импортируются только если данные PMS-TPA пусты; существующие данные не перезаписываются"
+  start: "&a&lНачата миграция из файла базы данных HuskHomes: <target>"
+  no_file: "&e&lФайл базы данных HuskHomes не найден. Сначала поместите его, как показано в учебнике!"
+  done_homes: "&a&lИмпортировано домашних точек: &6&l<target>"
+  done_warps: "&a&lИмпортировано варпов: &6&l<target>"
+  done_back: "&a&lИмпортировано точек возврата после смерти: &6&l<target>"
+  finish: "&a&lМиграция данных завершена!"
+  error: "&c&lОшибка миграции данных: <message>"
 system.config_migrated: "&a&lОбнаружен старый конфиг (авторезерв в backup)"
 system.debug_warning: "&c&lРежим отладки включён! Не забудьте отключить!"
 
 #=======================
 # Обновления
-#=======================
-update.checking: "&a&lПроверка обновлений..."
-update.available: "&a&lДоступна новая версия: &6&lTPA-v<target>&a&l - &6&lhttps://modrinth.com/plugin/tpa.66666/versions"
-update.latest: "&a&lУстановлена актуальная версия"
-update.failed: "&c&lОшибка проверки обновлений!"

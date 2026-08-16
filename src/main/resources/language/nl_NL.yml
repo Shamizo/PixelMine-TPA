@@ -4,7 +4,7 @@
 # Basisconfiguratie
 #=======================
 prefix: "&a&l> "
-console_prefix: "&7&l[TPA] "
+console_prefix: "&7&l[PMS-TPA] "
 not_online_players: "Geen online spelers"
 not_warps: "Geen warps beschikbaar"
 not_homes: "Geen homes beschikbaar"
@@ -43,6 +43,7 @@ request.to_here: "&a&lSpeler &6&l<target> &a&lwil naar je teleporteren! Verloopt
 request.to_target: "&a&lSpeler &6&l<target> &a&lnodigt je uit! Verloopt over &6&l<seconds> &a&lseconden!"
 request.sent_success: "&a&lVerzoek verzonden naar &6&l<target>!"
 request.timeout_notice: "&a&lVerzoek geldig voor &6&l<seconds> &a&lseconden!"
+request.tpaall_sent: "&a&lTeleportverzoeken verzonden naar &6&l<target> &a&lonline spelers, wachtend op acceptatie!"
 request.expired_from: "&c&lVerzoek van &6&l<target> &c&lis verlopen!"
 request.expired_to: "&c&lVerzoek aan &6&l<target> &c&lis verlopen!"
 
@@ -76,6 +77,9 @@ spawn.teleport_success: "&a&lGeteleporteerd naar spawn!"
 # Laatste locatie
 #=======================
 back.teleport_success: "&a&lGeteleporteerd naar laatste locatie!"
+back.death_message: "&a&lTerugkeren naar waar je stierf?"
+back.death_return_button: "&a&l[⏪ Terug]"
+back.death_click_hint: "&a&lKlik om terug te keren naar je sterfplaats"
 
 #=======================
 # Willekeurige teleportatie
@@ -159,6 +163,8 @@ teleport.generic_success: "&a&lGeteleporteerd naar &6&l<target>"
 teleport.tpall.to_target: "&a&lAdmin teleporteerde je naar &6&l<target>"
 teleport.tpall.to_self: "&a&lAdmin teleporteerde iedereen naar jou"
 teleport.tpall.success: "&a&lIedereen geteleporteerd naar &6&l<target>"
+teleport.tphere.success: "&a&lForce-teleported &6&l<target> &a&l to you"
+blacklist.clear_success: "&a&lYour blacklist has been cleared!"
 teleport.logout_location: "&a&lGeteleporteerd naar uitloglocatie van &6&l<target>"
 
 #=======================
@@ -168,13 +174,24 @@ system.config_reloaded: "&a&lConfig herladen!"
 system.plugin_loaded: "&a&lPlugin geladen! Versie: &6&l<target>"
 system.plugin_unloaded: "&c&lPlugin uitgeschakeld!"
 system.config_migrated_success: "&a&lConfig gemigreerd!"
+migration:
+  title: "&6&l=========== PMS-TPA datamigratiegids ==========="
+  step1: "&a&l1. Plaats het HuskHomes-databasebestand in plugins/PMS-TPA/data/"
+  step1_sqlite: "&a&l   - SQLite-databasebestand: HuskHomesData.db"
+  step1_h2: "&a&l   - H2-databasebestand: HuskHomesData.h2.mv.db of HuskHomesData.h2.db"
+  step2: "&a&l2. Als het bestand nog in plugins/HuskHomes/ staat, wordt het automatisch gedetecteerd"
+  step3: "&a&l3. Typ opnieuw /tpa migrate om de migratie te starten"
+  step4: "&a&l4. Je kunt het bestand na de migratie verwijderen"
+  notice: "&e&lOpmerking: gegevens worden alleen geïmporteerd als PMS-TPA-gegevens leeg zijn; bestaande gegevens worden niet overschreven"
+  start: "&a&lMigratie gestart vanuit het HuskHomes-databasebestand: <target>"
+  no_file: "&e&lGeen HuskHomes-databasebestand gevonden. Plaats het bestand eerst volgens de gids!"
+  done_homes: "&a&lHuizen geïmporteerd: &6&l<target>"
+  done_warps: "&a&lWarps geïmporteerd: &6&l<target>"
+  done_back: "&a&lDoodsterugkeerpunten geïmporteerd: &6&l<target>"
+  finish: "&a&lDatamigratie voltooid!"
+  error: "&c&lDatamigratie mislukt: <message>"
 system.config_migrated: "&a&lOude config gedetecteerd (backup in backup-map)"
 system.debug_warning: "Waarschuwing: Debug-modus actief!"
 
 #=======================
 # Updates
-#=======================
-update.checking: "&a&lZoeken naar updates..."
-update.available: "&a&lNieuwe versie &6&lTPA-v<target> &a&lbeschikbaar: https://modrinth.com/plugin/tpa.66666/versions"
-update.latest: "&a&lJe gebruikt de nieuwste versie"
-update.failed: "&c&lUpdatecontrole mislukt!"

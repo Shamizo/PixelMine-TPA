@@ -4,7 +4,7 @@
 # Grunnleggende innstillinger
 #=======================
 prefix: "&a&l> "
-console_prefix: "&7&l[TPA] "
+console_prefix: "&7&l[PMS-TPA] "
 not_online_players: "Ingen spillere online"
 not_warps: "Ingen tilgjengelige warp-punkter"
 not_homes: "Ingen hjem definert"
@@ -43,6 +43,7 @@ request.to_here: "&a&l&6&l<target> &a&lvil teleportere til deg! (&6&l<seconds>s&
 request.to_target: "&a&l&6&l<target> &a&linviterer deg! (&6&l<seconds>s&a&l)"
 request.sent_success: "&a&lForespørsel sendt til &6&l<target>"
 request.timeout_notice: "&a&lGyldig i &6&l<seconds> sekunder"
+request.tpaall_sent: "&a&lTeleporteringsforespørsler sendt til &6&l<target> &a&lonline-spillere, venter på aksept!"
 request.expired_from: "&c&lForespørsel fra &6&l<target> &c&lutløpt"
 request.expired_to: "&c&lDin forespørsel til &6&l<target> &c&lutløpt"
 
@@ -76,6 +77,9 @@ spawn.teleport_success: "&a&lTeleportert til spawn!"
 # Siste posisjon
 #=======================
 back.teleport_success: "&a&lReturnert til forrige posisjon!"
+back.death_message: "&a&lVil du returnere til hvor du døde?"
+back.death_return_button: "&a&l[⏪ Returner]"
+back.death_click_hint: "&a&lKlikk for å returnere til dødsstedet"
 
 #=======================
 # Tilfeldig teleport
@@ -159,6 +163,8 @@ teleport.generic_success: "&a&lTeleportert til &6&l<target>"
 teleport.tpall.to_target: "&a&lAdmin teleporterte deg til &6&l<target>"
 teleport.tpall.to_self: "&a&lAdmin hentet alle spillere"
 teleport.tpall.success: "&a&lAlle teleportert til &6&l<target>"
+teleport.tphere.success: "&a&lForce-teleported &6&l<target> &a&l to you"
+blacklist.clear_success: "&a&lYour blacklist has been cleared!"
 teleport.logout_location: "&a&lSiste utloggingsposisjon for &6&l<target>"
 
 #=======================
@@ -168,13 +174,24 @@ system.config_reloaded: "&a&lKonfig lastet på nytt"
 system.plugin_loaded: "&a&lPlugin lastet! Versjon: &6&l<target>"
 system.plugin_unloaded: "&c&lPlugin avlastet"
 system.config_migrated_success: "&a&lKonfig migrert"
+migration:
+  title: "&6&l=========== PMS-TPA datamigreringsveiledning ==========="
+  step1: "&a&l1. Plasser HuskHomes-databasen i plugins/PMS-TPA/data/"
+  step1_sqlite: "&a&l   - SQLite-database: HuskHomesData.db"
+  step1_h2: "&a&l   - H2-database: HuskHomesData.h2.mv.db eller HuskHomesData.h2.db"
+  step2: "&a&l2. Hvis filen fortsatt er i plugins/HuskHomes/, blir den oppdaget automatisk"
+  step3: "&a&l3. Skriv /tpa migrate igjen for å starte migreringen"
+  step4: "&a&l4. Du kan slette databasen etter migreringen"
+  notice: "&e&lMerk: data importeres kun når PMS-TPA-data er tomme; eksisterende data overskrives ikke"
+  start: "&a&lStarter migrering fra HuskHomes-databasen: <target>"
+  no_file: "&e&lFant ikke HuskHomes-databasen. Plasser filen først som vist i veiledningen!"
+  done_homes: "&a&lHjem importert: &6&l<target>"
+  done_warps: "&a&lWarps importert: &6&l<target>"
+  done_back: "&a&lDødsreturpunkter importert: &6&l<target>"
+  finish: "&a&lDatamigrering fullført!"
+  error: "&c&lDatamigrering mislyktes: <message>"
 system.config_migrated: "&a&lMigrerer gammel konfig (automatisk sikkerhetskopi)"
 system.debug_warning: "&c&lDebug-modus aktivert!"
 
 #=======================
 # Oppdateringer
-#=======================
-update.checking: "&a&lSjekker oppdateringer..."
-update.available: "&a&lNy versjon &6&lTPA-v<target>&a&l tilgjengelig: https://modrinth.com/plugin/tpa.66666/versions"
-update.latest: "&a&lAllerede oppdatert"
-update.failed: "&c&lKunne ikke sjekke oppdateringer"

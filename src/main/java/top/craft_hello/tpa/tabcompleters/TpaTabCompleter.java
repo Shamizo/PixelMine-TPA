@@ -21,7 +21,7 @@ public class TpaTabCompleter implements TabCompleter {
         List<String> list = new ArrayList<>();
         LanguageConfig language = LanguageConfig.getLanguage(sender);
         Config config = LoadingConfigUtil.getConfig();
-        if (args.length == 0 || (args.length == 1 && "spawn".equalsIgnoreCase(args[args.length - 1]) || args.length == 1 && "version".equalsIgnoreCase(args[args.length - 1]))){
+        if (args.length == 0 || (args.length == 1 && "spawn".equalsIgnoreCase(args[args.length - 1]))){
             return list;
         }
 
@@ -37,8 +37,28 @@ public class TpaTabCompleter implements TabCompleter {
 
                 if (playerList.isEmpty()) list.add(language.getMessage("not_online_players"));
                 if (config.hasPermission(sender, PermissionType.RELOAD)) list.add("reload");
-                if (config.hasPermission(sender, PermissionType.VERSION)) list.add("version");
+                if (config.hasPermission(sender, PermissionType.ADMIN)) list.add("migrate");
+                list.add("blacklist");
                 list.add("setlang");
+            }
+            return list;
+        }
+
+        if (args.length == 2 && "blacklist".equalsIgnoreCase(args[args.length - 2])){
+            list.add("add");
+            list.add("remove");
+            list.add("clear");
+            return list;
+        }
+
+        if (args.length == 3 && "blacklist".equalsIgnoreCase(args[args.length - 3])
+                && ("add".equalsIgnoreCase(args[1]) || "remove".equalsIgnoreCase(args[1]))){
+            if (sender instanceof Player){
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    if (!sender.equals(player)){
+                        list.add(player.getName());
+                    }
+                }
             }
             return list;
         }

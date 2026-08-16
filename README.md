@@ -1,9 +1,37 @@
+## Fork 3.3.1 修改说明
+
+本 fork 基于 [WarSkyGod/TPA 3.3.1](https://github.com/WarSkyGod/TPA)，合入了 upstream 的 Folia 传送死锁修复，并保留了 `/rtp` 在 Folia/Canvas 上的异步区域安全实现。
+
+### 修改内容
+
+- **合入 upstream 3.3.1**：`/home`、`/back`、`/warp` 的传送先派发到异步线程，再交给 FoliaLib 实体调度器，避免从区域线程直接进入可能阻塞的传送路径。
+- **修复 `/rtp` 跨区域崩溃**：修复 `/rtp` 在 Folia/Canvas 上执行时的 `Cannot retrieve chunk asynchronously` 崩溃。
+- **异步区块加载**：将 `getHighestBlockYAt`/`getBlockAt` 改为异步 —— 使用 `world.getChunkAtAsync` 异步加载区块，在区块所在区域线程的回调里读取方块高度，避免阻塞主线程/区域线程。
+- **安全落点重试**：最多重试 64 次以找到安全的随机落点。
+- **回调生命周期保护**：玩家离线、移动取消或 RTP 超时后停止后续异步重试，并保证跨线程落点对轮询任务可见。
+
+### 兼容性
+
+| 服务端 | 兼容性 | 说明 |
+|--------|--------|------|
+| Folia | ✅ 兼容 | 走异步区块加载逻辑 |
+| Canvas | ✅ 兼容 | 走异步区块加载逻辑 |
+| Paper/Purpur | ✅ 兼容 | 走原有同步逻辑 |
+
+### 构建方式
+
+```bash
+mvn package -DskipTests
+```
+
+**Java 版本要求**：Java 21
 
 ---
-# TPA
+
+# PMS-TPA
 [English](https://github.com/WarSkyGod/TPA/blob/main/README_en-US.md)
 
-一个支持 **Folia** 的简易传送插件，支持 **Bukkit/Spigot/Paper/Folia**。
+一个支持 **Folia/Canvas** 的简易传送插件，支持 **Bukkit/Spigot/Paper/Folia/Canvas**。
 
 ## 特点
 
@@ -17,7 +45,7 @@
 ### 传送
 - **/tpa <玩家名称>**  
   向玩家发送传送请求。
-- **/tphere <玩家名称>**  
+- **/tpahere <玩家名称>**  
   请求玩家传送到你身边。
 - **/tpall [player/warp/spawn] [玩家名称/传送点名称]**  
   强制将所有在线玩家传送到目标位置（如果不加参数，默认传送到使用者身边）。
@@ -63,8 +91,6 @@
   传送到上一次的位置。
 - **/rtp**  
   随机传送。
-- **/tpa version**  
-  检查插件更新。
 - **/tpa setlang <clear/语言>**  
   设置客户端显示语言。
 - **/tpa reload**  
@@ -81,16 +107,14 @@
   可使用 `/tplogout` 传送到玩家最后的下线位置。  
 - **tpa.reload**  
   可使用 `/reload` 命令重新加载配置文件。
-- **tpa.version**  
-  拥有这个权限的玩家会收到插件更新通知，可使用 `/tpa version` 来检查插件更新。
 - **tpa.nodelay**  
   拥有这个权限的玩家不会受到命令等待时间的限制。  
 
 ### 传送
 - **tpa.tpa**  
   可使用 `/tpa` 命令请求传送到指定玩家的位置（默认关闭权限检查）。
-- **tpa.tphere**  
-  可使用 `/tphere` 命令请求指定玩家传送到你的位置（默认关闭权限检查）。
+- **tpa.tpahere**  
+  可使用 `/tpahere` 命令请求指定玩家传送到你的位置（默认关闭权限检查）。
 - **tpa.rtp**
   可使用 `/rtp` 命令随机传送（默认关闭权限检查）。
 
@@ -133,7 +157,7 @@
 ## 关于配置迁移问题
 
 3.2.0 版本添加了老版本配置文件自动迁移的功能，无需过多担心。  
-但出于安全考虑，迁移后会自动备份旧版本配置文件到 `plugins/TPA/backup/旧版本号` 目录下。如果迁移失败，请手动尝试迁移配置文件。
+但出于安全考虑，迁移后会自动备份旧版本配置文件到 `plugins/PMS-TPA/backup/旧版本号` 目录下。如果迁移失败，请手动尝试迁移配置文件。
 
 ## 感谢
 

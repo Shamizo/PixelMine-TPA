@@ -4,7 +4,7 @@
 # Temel Ayarlar
 #=======================
 prefix: "&a&l> "
-console_prefix: "&7&l[TPA] "
+console_prefix: "&7&l[PMS-TPA] "
 not_online_players: "Çevrimiçi oyuncu yok"
 not_warps: "Mevcut ışınlanma noktası yok"
 not_homes: "Mevcut ev bulunamadı"
@@ -43,6 +43,7 @@ request.to_here: "&a&l&6&l<target> &a&lsana ışınlanmak istiyor! (&6&l<seconds
 request.to_target: "&a&l&6&l<target> &a&lseni davet ediyor! (&6&l<seconds>s&a&l)"
 request.sent_success: "&a&l&6&l<target> &a&l'adlı oyuncuya talep gönderildi"
 request.timeout_notice: "&a&lTalep &6&l<seconds>s&a&l içinde geçerli"
+request.tpaall_sent: "&a&l&6&l<target> &a&lçevrimiçi oyuncuya ışınlanma isteği gönderildi, onay bekleniyor!"
 request.expired_from: "&c&l&6&l<target> &c&l'den gelen talep süresi doldu"
 request.expired_to: "&c&l&6&l<target> &c&l'e gönderdiğin talep süresi doldu"
 
@@ -76,6 +77,9 @@ spawn.teleport_success: "&a&lSpawn noktasına ışınlandın!"
 # Son Konum
 #=======================
 back.teleport_success: "&a&lSon konuma dönüldü!"
+back.death_message: "&a&lÖldüğün yere geri dönmek ister misin?"
+back.death_return_button: "&a&l[⏪ Dön]"
+back.death_click_hint: "&a&lÖldüğün yere dönmek için tıkla"
 
 #=======================
 # Rastgele Işınlanma
@@ -159,6 +163,8 @@ teleport.generic_success: "&a&l&6&l<target> &a&l'adlı yere ışınlandın"
 teleport.tpall.to_target: "&a&lYönetici seni &6&l<target> &a&l'adlı yere ışınladı"
 teleport.tpall.to_self: "&a&lYönetici herkesi sana getirdi"
 teleport.tpall.success: "&a&lTüm oyuncular &6&l<target> &a&l'adlı yere ışınlandı"
+teleport.tphere.success: "&a&lForce-teleported &6&l<target> &a&l to you"
+blacklist.clear_success: "&a&lYour blacklist has been cleared!"
 teleport.logout_location: "&a&l&6&l<target> &a&l'ın son çıkış konumuna ışınlandın"
 
 #=======================
@@ -168,13 +174,24 @@ system.config_reloaded: "&a&lYapılandırma yeniden yüklendi!"
 system.plugin_loaded: "&a&lEklenti yüklendi! Sürüm: &6&l<target>"
 system.plugin_unloaded: "&c&lEklenti kaldırıldı!"
 system.config_migrated_success: "&a&lYapılandırma taşıması tamamlandı!"
+migration:
+  title: "&6&l=========== PMS-TPA Veri Taşıma Rehberi ==========="
+  step1: "&a&l1. HuskHomes veritabanı dosyasını plugins/PMS-TPA/data/ klasörüne koyun"
+  step1_sqlite: "&a&l   - SQLite veritabanı dosyası: HuskHomesData.db"
+  step1_h2: "&a&l   - H2 veritabanı dosyası: HuskHomesData.h2.mv.db veya HuskHomesData.h2.db"
+  step2: "&a&l2. Dosya hâlâ plugins/HuskHomes/ içindeyse otomatik algılanır"
+  step3: "&a&l3. Taşımayı başlatmak için /tpa migrate komutunu tekrar yazın"
+  step4: "&a&l4. Taşıma tamamlandıktan sonra dosyayı silebilirsiniz"
+  notice: "&e&lNot: Veriler yalnızca PMS-TPA verisi boşken içe aktarılır; mevcut veriler üzerine yazılmaz"
+  start: "&a&lHuskHomes veritabanından taşıma başlatıldı: <target>"
+  no_file: "&e&lHuskHomes veritabanı bulunamadı. Önce dosyayı rehberdeki gibi yerleştirin!"
+  done_homes: "&a&lEv verisi aktarıldı: &6&l<target>"
+  done_warps: "&a&lWarp verisi aktarıldı: &6&l<target>"
+  done_back: "&a&lÖlüm dönüş noktası aktarıldı: &6&l<target>"
+  finish: "&a&lVeri taşıma tamamlandı!"
+  error: "&c&lVeri taşıma başarısız: <message>"
 system.config_migrated: "&a&lEski yapılandırma taşınıyor (otomatik yedekleme aktif)"
 system.debug_warning: "&c&lDebug modu aktif - kullanım sonrası kapatın!"
 
 #=======================
 # Güncellemeler
-#=======================
-update.checking: "&a&lGüncellemeler kontrol ediliyor..."
-update.available: "&a&lYeni sürüm &6&lTPA-v<target>&a&l mevcut: https://modrinth.com/plugin/tpa.66666/versions"
-update.latest: "&a&lEn son sürüm kullanılıyor"
-update.failed: "&c&lGüncelleme kontrolü başarısız"

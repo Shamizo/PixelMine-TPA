@@ -22,11 +22,11 @@ public class Config extends Configuration {
     private String defaultLanguageStr;
     private Boolean isOldServer;
     private boolean debug;
-    private boolean updateCheck;
     private boolean forceSpawn;
     private boolean enableTitleMessage;
     private boolean enableSound;
     private boolean nonTpaOrTphereDisableCheck;
+    private boolean backDeathMessage;
     private int acceptDelay;
     private boolean enableTeleportDelay;
     private boolean enableCommandDelay;
@@ -34,7 +34,7 @@ public class Config extends Configuration {
     private final Map<PermissionType, Integer> COMMAND_DELAYS = new ConcurrentHashMap<>();
     private final Map<CommandType, Boolean> ENABLE_COMMANDS = new ConcurrentHashMap<>();
     private final Map<PermissionType, Boolean> ENABLE_PERMISSIONS = new ConcurrentHashMap<>();
-    private List<String> rtpDisableWorlds;
+    private final Map<CommandType, List<String>> DISABLE_WORLDS = new ConcurrentHashMap<>();
     private int rtpLimitX;
     private int rtpLimitZ;
     private final Map<PermissionType, Integer> HOME_AMOUNTS = new ConcurrentHashMap<>();
@@ -60,7 +60,6 @@ public class Config extends Configuration {
         defaultLanguageStr = formatLangStr(defaultLanguageStr);
         isOldServer = isOldServer();
         debug = configuration.getBoolean("debug");
-        updateCheck = configuration.getBoolean("update_check");
         forceSpawn = configuration.getBoolean("force_spawn");
         enableTitleMessage = !isOldServer && configuration.getBoolean("enable_title_message");
         enableSound = !isOldServer && configuration.getBoolean("enable_sound");
@@ -87,8 +86,10 @@ public class Config extends Configuration {
 
         ENABLE_COMMANDS.put(CommandType.TPA, configuration.getBoolean("tpa.enable"));
         ENABLE_PERMISSIONS.put(PermissionType.TPA, configuration.getBoolean("tpa.permission"));
-        ENABLE_COMMANDS.put(CommandType.TP_HERE, configuration.getBoolean("tphere.enable"));
-        ENABLE_PERMISSIONS.put(PermissionType.TP_HERE, configuration.getBoolean("tphere.permission"));
+        ENABLE_COMMANDS.put(CommandType.TP_HERE, configuration.getBoolean("tpahere.enable", configuration.getBoolean("tphere.enable")));
+        ENABLE_PERMISSIONS.put(PermissionType.TP_HERE, configuration.getBoolean("tpahere.permission", configuration.getBoolean("tphere.permission")));
+        ENABLE_COMMANDS.put(CommandType.TPA_ALL, configuration.getBoolean("tpaall.enable", true));
+        ENABLE_PERMISSIONS.put(PermissionType.TPA_ALL, configuration.getBoolean("tpaall.permission", false));
         ENABLE_PERMISSIONS.put(PermissionType.DENYS, configuration.getBoolean("denys.permission"));
         ENABLE_COMMANDS.put(CommandType.RTP, configuration.getBoolean("rtp.enable"));
         ENABLE_PERMISSIONS.put(PermissionType.RTP, configuration.getBoolean("rtp.permission"));
@@ -100,8 +101,16 @@ public class Config extends Configuration {
         ENABLE_PERMISSIONS.put(PermissionType.SPAWN, configuration.getBoolean("spawn.permission"));
         ENABLE_COMMANDS.put(CommandType.BACK, configuration.getBoolean("back.enable"));
         ENABLE_PERMISSIONS.put(PermissionType.BACK, configuration.getBoolean("back.permission"));
+        backDeathMessage = configuration.getBoolean("back.death_message", true);
 
-        rtpDisableWorlds = configuration.getStringList("rtp.disable_worlds");
+        DISABLE_WORLDS.put(CommandType.TPA, configuration.getStringList("tpa.disable_worlds"));
+        DISABLE_WORLDS.put(CommandType.TP_HERE, configuration.getStringList(configuration.contains("tpahere.disable_worlds") ? "tpahere.disable_worlds" : "tphere.disable_worlds"));
+        DISABLE_WORLDS.put(CommandType.TPA_ALL, configuration.getStringList("tpaall.disable_worlds"));
+        DISABLE_WORLDS.put(CommandType.RTP, configuration.getStringList("rtp.disable_worlds"));
+        DISABLE_WORLDS.put(CommandType.WARP, configuration.getStringList("warp.disable_worlds"));
+        DISABLE_WORLDS.put(CommandType.HOME, configuration.getStringList("home.disable_worlds"));
+        DISABLE_WORLDS.put(CommandType.SPAWN, configuration.getStringList("spawn.disable_worlds"));
+        DISABLE_WORLDS.put(CommandType.BACK, configuration.getStringList("back.disable_worlds"));
         rtpLimitX = configuration.getInt("rtp.limit.x");
         rtpLimitZ = configuration.getInt("rtp.limit.z");
 
@@ -125,7 +134,6 @@ public class Config extends Configuration {
         defaultLanguageStr = formatLangStr(defaultLanguageStr);
         SendMessageUtil.configVersionUpdate(Bukkit.getConsoleSender());
         isOldServer = isOldServer();
-        updateCheck = configuration.getBoolean("update_check");
         forceSpawn = configuration.getBoolean("force_spawn");
         enableTitleMessage = !isOldServer && configuration.getBoolean("enable_title_message");
         enableSound = !isOldServer && configuration.getBoolean("enable_playsound");
@@ -171,7 +179,6 @@ public class Config extends Configuration {
                 configurationFile.renameTo(new File(PLUGIN.getDataFolder(), "backup/" + configVersion + "/" + configurationFile.getName()));
                 loadConfiguration(true);
                 configuration.set("language", defaultLanguageStr);
-                configuration.set("update_check", updateCheck);
 
                 if (!configVersion.equals("3.0.0")) {
                     configuration.set("force_spawn", forceSpawn);
@@ -190,8 +197,8 @@ public class Config extends Configuration {
                 keySection.set("enable", ENABLE_COMMANDS.get(CommandType.TPA));
                 keySection.set("permission", ENABLE_PERMISSIONS.get(PermissionType.TPA));
 
-                keySection = configuration.getConfigurationSection("tphere");
-                if (isNull(keySection)) keySection = configuration.createSection("tphere");
+                keySection = configuration.getConfigurationSection("tpahere");
+                if (isNull(keySection)) keySection = configuration.createSection("tpahere");
                 keySection.set("enable", ENABLE_COMMANDS.get(CommandType.TP_HERE));
                 keySection.set("permission", ENABLE_PERMISSIONS.get(PermissionType.TP_HERE));
 
@@ -267,10 +274,6 @@ public class Config extends Configuration {
         return defaultLanguageStr;
     }
 
-    public boolean isUpdateCheck() {
-        return updateCheck;
-    }
-
     public boolean isDebug() {
         return debug;
     }
@@ -341,12 +344,18 @@ public class Config extends Configuration {
         return nonTpaOrTphereDisableCheck;
     }
 
+    public boolean isBackDeathMessage(){
+        return backDeathMessage;
+    }
+
     public int getHomeAmountMax(PermissionType permissionType) {
         return HOME_AMOUNTS.get(permissionType);
     }
 
-    public boolean isRtpDisableWorld(World world){
-        for (String worldName : rtpDisableWorlds) if (worldName.equalsIgnoreCase(world.getName())) return true;
+    public boolean isDisableWorld(CommandType commandType, World world){
+        List<String> disableWorlds = DISABLE_WORLDS.get(commandType);
+        if (disableWorlds == null) return false;
+        for (String worldName : disableWorlds) if (worldName.equalsIgnoreCase(world.getName())) return true;
         return false;
     }
 

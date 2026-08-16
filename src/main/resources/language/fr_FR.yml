@@ -4,7 +4,7 @@
 # Configuration de base
 #=======================
 prefix: "&a&l> "
-console_prefix: "&7&l[TPA] "
+console_prefix: "&7&l[PMS-TPA] "
 not_online_players: "Aucun joueur en ligne"
 not_warps: "Aucun point de téléportation disponible"
 not_homes: "Aucune maison disponible"
@@ -43,6 +43,7 @@ request.to_here: "&a&lLe joueur &6&l<target> &a&lsouhaite vous rejoindre! Expire
 request.to_target: "&a&lLe joueur &6&l<target> &a&lvous invite! Expire dans &6&l<seconds>&a&l secondes!"
 request.sent_success: "&a&lDemande envoyée à &6&l<target>&a&l!"
 request.timeout_notice: "&a&lValable pendant &6&l<seconds>&a&l secondes!"
+request.tpaall_sent: "&a&lDemandes de téléportation envoyées à &6&l<target> &a&ljoueurs en ligne, en attente de leur acceptation !"
 request.expired_from: "&c&lDemande de &6&l<target>&c&l expirée!"
 request.expired_to: "&c&lVotre demande à &6&l<target>&c&l a expiré!"
 
@@ -76,6 +77,9 @@ spawn.teleport_success: "&a&lTéléporté au spawn principal!"
 # Position précédente
 #=======================
 back.teleport_success: "&a&lRetour à la position précédente!"
+back.death_message: "&a&lRetourner là où vous êtes mort ?"
+back.death_return_button: "&a&l[⏪ Retour]"
+back.death_click_hint: "&a&lCliquez pour revenir sur votre lieu de mort"
 
 #=======================
 # Téléportation aléatoire
@@ -159,6 +163,8 @@ teleport.generic_success: "&a&lTéléporté vers &6&l<target>"
 teleport.tpall.to_target: "&a&lTéléporté par admin vers &6&l<target>"
 teleport.tpall.to_self: "&a&lTous les joueurs téléportés à vous"
 teleport.tpall.success: "&a&lTous téléportés vers &6&l<target>"
+teleport.tphere.success: "&a&lForce-teleported &6&l<target> &a&l to you"
+blacklist.clear_success: "&a&lYour blacklist has been cleared!"
 teleport.logout_location: "&a&lTéléporté à la dernière position de &6&l<target>"
 
 #=======================
@@ -168,13 +174,24 @@ system.config_reloaded: "&a&lConfig rechargée!"
 system.plugin_loaded: "&a&lPlugin chargé! Version: &6&l<target>"
 system.plugin_unloaded: "&c&lPlugin déchargé!"
 system.config_migrated_success: "&a&lMigration réussie!"
+migration:
+  title: "&6&l=========== Tutoriel de migration des données PMS-TPA ==========="
+  step1: "&a&l1. Placez le fichier de base de données HuskHomes dans plugins/PMS-TPA/data/"
+  step1_sqlite: "&a&l   - Fichier de base de données SQLite : HuskHomesData.db"
+  step1_h2: "&a&l   - Fichier de base de données H2 : HuskHomesData.h2.mv.db ou HuskHomesData.h2.db"
+  step2: "&a&l2. Si le fichier est toujours dans plugins/HuskHomes/, il sera détecté automatiquement"
+  step3: "&a&l3. Saisissez à nouveau /tpa migrate pour démarrer la migration"
+  step4: "&a&l4. Vous pouvez supprimer le fichier après la migration"
+  notice: "&e&lRemarque : les données ne sont importées que si les données PMS-TPA sont vides ; les données existantes ne sont pas écrasées"
+  start: "&a&lDémarrage de la migration depuis le fichier HuskHomes : <target>"
+  no_file: "&e&lFichier de base de données HuskHomes introuvable. Placez-le d'abord comme indiqué dans le tutoriel !"
+  done_homes: "&a&lMaisons importées : &6&l<target>"
+  done_warps: "&a&lWarp importés : &6&l<target>"
+  done_back: "&a&lPoints de retour après mort importés : &6&l<target>"
+  finish: "&a&lMigration des données terminée !"
+  error: "&c&lÉchec de la migration des données : <message>"
 system.config_migrated: "&a&lAncienne config détectée (sauvegardée)"
 system.debug_warning: "&c&lMode debug activé!"
 
 #=======================
 # Mises à jour
-#=======================
-update.checking: "&a&lRecherche de mises à jour..."
-update.available: "&a&lNouvelle version disponible: &6&lTPA-v<target> &a&l- &6&lhttps://modrinth.com/plugin/tpa.66666/versions"
-update.latest: "&a&lVersion à jour"
-update.failed: "&c&lÉchec de vérification!"

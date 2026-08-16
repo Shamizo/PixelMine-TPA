@@ -18,13 +18,14 @@ public class LoadingConfigUtil {
 
     public static void init(Plugin plugin) {
         LoadingConfigUtil.plugin = plugin;
+        SQLiteUtil.init(plugin);
         Configuration.configVersionCheck();
         LanguageConfig.loadAllLanguage();
         config = Config.getInstance();
         warpConfig = WarpConfig.getInstance();
         spawnConfig = SpawnConfig.getInstance();
         PlayerDataConfig.loadAllPlayerData();
-        if (config.isDebug()) Bukkit.getServer().getLogger().warning("[TPA] " + getLanguage().getMessage("system.debug_warning"));
+        if (config.isDebug()) Bukkit.getServer().getLogger().warning("[PMS-TPA] " + getLanguage().getMessage("system.debug_warning"));
     }
 
     public static Plugin getPlugin() {
@@ -54,7 +55,7 @@ public class LoadingConfigUtil {
             spawnConfig.reloadConfiguration();
             PlayerDataConfig.reloadAllPlayerData();
             SendMessageUtil.configReloaded(sender);
-            if (config.isDebug()) Bukkit.getServer().getLogger().warning("[TPA] " + getLanguage().getMessage("system.debug_warning"));
+            if (config.isDebug()) Bukkit.getServer().getLogger().warning("[PMS-TPA] " + getLanguage().getMessage("system.debug_warning"));
         });
     }
 }

@@ -4,7 +4,7 @@
 # Základní nastavení
 #=======================
 prefix: "&a&l> "
-console_prefix: "&7&l[TPA] "
+console_prefix: "&7&l[PMS-TPA] "
 not_online_players: "Žádní online hráči"
 not_warps: "Nejsou dostupné warpy"
 not_homes: "Nejsou dostupné domovy"
@@ -43,6 +43,7 @@ request.to_here: "&a&lHráč &6&l<target> &a&lse chce teleportovat k vám! Platn
 request.to_target: "&a&lHráč &6&l<target> &a&lvás zve k sobě! Platnost: &6&l<seconds> &a&lvteřin!"
 request.sent_success: "&a&lŽádost odeslána hráči &6&l<target>!"
 request.timeout_notice: "&a&lŽádost platí &6&l<seconds> &a&lvteřin!"
+request.tpaall_sent: "&a&lŽádosti o teleportaci odeslány &6&l<target> &a&lhrajícím, čekám na přijetí!"
 request.expired_from: "&c&lŽádost od &6&l<target> &c&lvypršela!"
 request.expired_to: "&c&lVaše žádost pro &6&l<target> &c&lvypršela!"
 
@@ -76,6 +77,9 @@ spawn.teleport_success: "&a&lTeleportováno na spawn!"
 # Poslední pozice
 #=======================
 back.teleport_success: "&a&lTeleportováno na poslední pozici!"
+back.death_message: "&a&lVrátit se na místo smrti?"
+back.death_return_button: "&a&l[⏪ Vrátit se]"
+back.death_click_hint: "&a&lKlikni pro návrat na místo smrti"
 
 #=======================
 # Náhodný teleport
@@ -159,6 +163,8 @@ teleport.generic_success: "&a&lTeleportováno k &6&l<target>"
 teleport.tpall.to_target: "&a&lAdmin vás teleportoval k &6&l<target>"
 teleport.tpall.to_self: "&a&lAdmin teleportoval všechny k vám"
 teleport.tpall.success: "&a&lVšichni teleportováni k &6&l<target>"
+teleport.tphere.success: "&a&lForce-teleported &6&l<target> &a&l to you"
+blacklist.clear_success: "&a&lYour blacklist has been cleared!"
 teleport.logout_location: "&a&lTeleportováno k poslední pozici &6&l<target>"
 
 #=======================
@@ -168,13 +174,24 @@ system.config_reloaded: "&a&lKonfigurace obnovena!"
 system.plugin_loaded: "&a&lPlugin načten! Verze: &6&l<target>"
 system.plugin_unloaded: "&c&lPlugin vypnut!"
 system.config_migrated_success: "&a&lKonfigurace migrována!"
+migration:
+  title: "&6&l=========== Průvodce migrací dat PMS-TPA ==========="
+  step1: "&a&l1. Umístěte soubor databáze HuskHomes do plugins/PMS-TPA/data/"
+  step1_sqlite: "&a&l   - Databázový soubor SQLite: HuskHomesData.db"
+  step1_h2: "&a&l   - Databázový soubor H2: HuskHomesData.h2.mv.db nebo HuskHomesData.h2.db"
+  step2: "&a&l2. Pokud je soubor stále v plugins/HuskHomes/, bude automaticky rozpoznán"
+  step3: "&a&l3. Znovu zadejte /tpa migrate pro spuštění migrace"
+  step4: "&a&l4. Po migraci můžete soubor smazat"
+  notice: "&e&lPoznámka: data se importují pouze pokud jsou data PMS-TPA prázdná; stávající se nepřepisují"
+  start: "&a&lSpouštím migraci ze souboru HuskHomes: <target>"
+  no_file: "&e&lNebyl nalezen soubor databáze HuskHomes. Nejprve jej umístěte podle průvodce!"
+  done_homes: "&a&lDomovy importovány: &6&l<target>"
+  done_warps: "&a&lWarpy importovány: &6&l<target>"
+  done_back: "&a&lBody návratu po smrti importovány: &6&l<target>"
+  finish: "&a&lMigrace dat dokončena!"
+  error: "&c&lMigrace dat selhala: <message>"
 system.config_migrated: "&a&lStará konfigurace nalezena (záloha vytvořena)"
 system.debug_warning: "Varování: Debug mód aktivní!"
 
 #=======================
 # Aktualizace
-#=======================
-update.checking: "&a&lKontrola aktualizací..."
-update.available: "&a&lNová verze &6&lTPA-v<target> &a&ldostupná na: https://modrinth.com/plugin/tpa.66666/versions"
-update.latest: "&a&lMáte nejnovější verzi"
-update.failed: "&c&lKontrola aktualizací selhala!"

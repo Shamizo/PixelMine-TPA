@@ -4,7 +4,7 @@
 # Grundindstillinger
 #=======================
 prefix: "&a&l> "
-console_prefix: "&7&l[TPA] "
+console_prefix: "&7&l[PMS-TPA] "
 not_online_players: "Ingen online spillere"
 not_warps: "Ingen tilgængelige teleportationspunkter"
 not_homes: "Ingen tilgængelige hjem"
@@ -43,6 +43,7 @@ request.to_here: "&a&lSpiller &6&l<target> &a&lvil teleportere til dig. Anmodnin
 request.to_target: "&a&lSpiller &6&l<target> &a&linviterer dig til deres position. Anmodning udløber om &6&l<seconds> &a&lsekunder!"
 request.sent_success: "&a&lTeleportationsanmodning sendt til &6&l<target>!"
 request.timeout_notice: "&a&lAnmodningen er gyldig i &6&l<seconds> &a&lsekunder!"
+request.tpaall_sent: "&a&lTeleporteringsanmodninger sendt til &6&l<target> &a&lspillere online, venter på accept!"
 request.expired_from: "&c&lTeleportationsanmodning fra &6&l<target> &c&ler udløbet!"
 request.expired_to: "&c&lDin anmodning til &6&l<target> &c&ler udløbet!"
 
@@ -76,6 +77,9 @@ spawn.teleport_success: "&a&lDu er teleporteret til spawn!"
 # Sidste position
 #=======================
 back.teleport_success: "&a&lDu er teleporteret til din sidste position!"
+back.death_message: "&a&lVil du vende tilbage til, hvor du døde?"
+back.death_return_button: "&a&l[⏪ Vend tilbage]"
+back.death_click_hint: "&a&lKlik for at vende tilbage til dødsstedet"
 
 #=======================
 # Tilfældig teleportation
@@ -159,6 +163,8 @@ teleport.generic_success: "&a&lTeleporteret til &6&l<target>"
 teleport.tpall.to_target: "&a&lEn admin har teleporteret dig til &6&l<target>"
 teleport.tpall.to_self: "&a&lEn admin teleporterede alle spillere til dig"
 teleport.tpall.success: "&a&lAlle spillere teleporteret til &6&l<target>"
+teleport.tphere.success: "&a&lForce-teleported &6&l<target> &a&l to you"
+blacklist.clear_success: "&a&lYour blacklist has been cleared!"
 teleport.logout_location: "&a&lTeleporteret til &6&l<target>s logud-position"
 
 #=======================
@@ -168,13 +174,24 @@ system.config_reloaded: "&a&lKonfiguration genindlæst!"
 system.plugin_loaded: "&a&lPlugin indlæst! Version: &6&l<target>"
 system.plugin_unloaded: "&c&lPlugin afsluttet!"
 system.config_migrated_success: "&a&lKonfiguration migreret!"
+migration:
+  title: "&6&l=========== PMS-TPA dataoverførselsvejledning ==========="
+  step1: "&a&l1. Placer HuskHomes-databasen i plugins/PMS-TPA/data/"
+  step1_sqlite: "&a&l   - SQLite-database: HuskHomesData.db"
+  step1_h2: "&a&l   - H2-database: HuskHomesData.h2.mv.db eller HuskHomesData.h2.db"
+  step2: "&a&l2. Hvis filen stadig er i plugins/HuskHomes/, registreres den automatisk"
+  step3: "&a&l3. Skriv /tpa migrate igen for at starte overførslen"
+  step4: "&a&l4. Du kan slette databasen efter overførslen"
+  notice: "&e&lBemærk: data importeres kun, når PMS-TPA-data er tomme; eksisterende data overskrives ikke"
+  start: "&a&lStarter overførsel fra HuskHomes-databasen: <target>"
+  no_file: "&e&lIngen HuskHomes-database fundet. Placer filen først som vist i vejledningen!"
+  done_homes: "&a&lHjem importeret: &6&l<target>"
+  done_warps: "&a&lWarps importeret: &6&l<target>"
+  done_back: "&a&lDødsreturpunkter importeret: &6&l<target>"
+  finish: "&a&lDataoverførsel gennemført!"
+  error: "&c&lDataoverførsel mislykkedes: <message>"
 system.config_migrated: "&a&lÆldre konfiguration fundet - migrerer (backup i backup-mappen)"
 system.debug_warning: "Advarsel: Debug-tilstand er aktiv - deaktiver efter brug!"
 
 #=======================
 # Opdateringer
-#=======================
-update.checking: "&a&lSøger efter opdateringer..."
-update.available: "&a&lNy version tilgængelig: &6&lTPA-v<target> &a&lhent den fra &6&lhttps://modrinth.com/plugin/tpa.66666/versions"
-update.latest: "&a&lDu kører den seneste version"
-update.failed: "&c&lKunne ikke tjekke for opdateringer!"

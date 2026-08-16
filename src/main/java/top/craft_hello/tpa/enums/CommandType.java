@@ -1,7 +1,7 @@
 package top.craft_hello.tpa.enums;
 
 public enum CommandType {
-    TPA, TP_HERE, RTP, TP_ALL, TP_LOGOUT, TP_ACCEPT, TP_DENY, DENYS, WARP, SET_WARP, DEL_WARP, HOME, HOMES, SET_HOME, SET_DEFAULT_HOME, DEL_HOME, SPAWN, SET_SPAWN, DEL_SPAWN, BACK, RELOAD, SET_LANG, VERSION;
+    TPA, TP_HERE, TPA_ALL, RTP, TP_ALL, TP_LOGOUT, TP_ACCEPT, TP_DENY, DENYS, WARP, SET_WARP, DEL_WARP, HOME, HOMES, SET_HOME, SET_DEFAULT_HOME, DEL_HOME, SPAWN, SET_SPAWN, DEL_SPAWN, BACK, RELOAD, SET_LANG, MIGRATE, TP_HERE_FORCE, BLACKLIST, TP;
 
     public static CommandType getCommandType(String command){
         CommandType commandType;
@@ -9,8 +9,20 @@ public enum CommandType {
             case "tpa":
                 commandType = CommandType.TPA;
                 break;
-            case "tphere":
+            case "tpahere":
                 commandType = CommandType.TP_HERE;
+                break;
+            case "tphere":
+                commandType = CommandType.TP_HERE_FORCE;
+                break;
+            case "tp":
+                commandType = CommandType.TP;
+                break;
+            case "blacklist":
+                commandType = CommandType.BLACKLIST;
+                break;
+            case "tpaall":
+                commandType = CommandType.TPA_ALL;
                 break;
             case "rtp":
                 commandType = CommandType.RTP;
@@ -72,8 +84,8 @@ public enum CommandType {
             case "setlang":
                 commandType = CommandType.SET_LANG;
                 break;
-            case "version":
-                commandType = CommandType.VERSION;
+            case "migrate":
+                commandType = CommandType.MIGRATE;
                 break;
             default:
                 commandType = null;

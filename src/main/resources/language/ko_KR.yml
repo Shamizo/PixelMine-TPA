@@ -4,7 +4,7 @@
 # 기본 설정
 #=======================
 prefix: "&a&l> "
-console_prefix: "&7&l[TPA] "
+console_prefix: "&7&l[PMS-TPA] "
 not_online_players: "접속 중인 플레이어 없음"
 not_warps: "이용 가능한 워프 지점 없음"
 not_homes: "설정된 홈 없음"
@@ -43,6 +43,7 @@ request.to_here: "&a&l플레이어 &6&l<target>&a&l님이 당신에게 이동을
 request.to_target: "&a&l플레이어 &6&l<target>&a&l님이 자신에게 이동을 초대했습니다 (&6&l<seconds>초&a&l 후 만료)"
 request.sent_success: "&a&l&6&l<target>&a&l님에게 요청을 보냈습니다"
 request.timeout_notice: "&a&l요청 유효 시간 &6&l<seconds>초"
+request.tpaall_sent: "&a&l&6&l<target> &a&l명의 온라인 플레이어에게 텔레포트 요청을 보냈습니다!"
 request.expired_from: "&c&l&6&l<target>&c&l님의 요청이 만료되었습니다"
 request.expired_to: "&c&l&6&l<target>&c&l님에게 보낸 요청이 만료되었습니다"
 
@@ -76,6 +77,9 @@ spawn.teleport_success: "&a&l스폰 지점으로 이동했습니다!"
 # 이전 위치
 #=======================
 back.teleport_success: "&a&l이전 위치로 이동했습니다!"
+back.death_message: "&a&l사망 지점으로 돌아갈까요?"
+back.death_return_button: "&a&l[⏪ 돌아가기]"
+back.death_click_hint: "&a&l클릭하여 사망 지점으로 돌아갑니다"
 
 #=======================
 # 랜덤 텔레포트
@@ -159,6 +163,8 @@ teleport.generic_success: "&a&l&6&l<target>&a&l(으)로 이동했습니다"
 teleport.tpall.to_target: "&a&l관리자가 당신을 &6&l<target>&a&l(으)로 이동시켰습니다"
 teleport.tpall.to_self: "&a&l관리자가 모든 플레이어를 당신에게 이동시켰습니다"
 teleport.tpall.success: "&a&l모든 플레이어를 &6&l<target>&a&l(으)로 이동시켰습니다"
+teleport.tphere.success: "&a&lForce-teleported &6&l<target> &a&l to you"
+blacklist.clear_success: "&a&lYour blacklist has been cleared!"
 teleport.logout_location: "&a&l&6&l<target>&a&l님의 마지막 접속 위치로 이동했습니다"
 
 #=======================
@@ -168,13 +174,24 @@ system.config_reloaded: "&a&l설정 파일을 재로드했습니다"
 system.plugin_loaded: "&a&l플러그인 로드 완료! 버전: &6&l<target>"
 system.plugin_unloaded: "&c&l플러그인 언로드 완료"
 system.config_migrated_success: "&a&l설정 파일 마이그레이션 완료"
+migration:
+  title: "&6&l=========== PMS-TPA 데이터 마이그레이션 튜토리얼 ==========="
+  step1: "&a&l1. HuskHomes 데이터베이스 파일을 plugins/PMS-TPA/data/ 폴더에 넣으세요"
+  step1_sqlite: "&a&l   - SQLite 데이터베이스 파일: HuskHomesData.db"
+  step1_h2: "&a&l   - H2 데이터베이스 파일: HuskHomesData.h2.mv.db 또는 HuskHomesData.h2.db"
+  step2: "&a&l2. 파일이 plugins/HuskHomes/ 기본 위치에 있어도 자동 감지됩니다"
+  step3: "&a&l3. /tpa migrate 를 다시 입력하여 마이그레이션 시작"
+  step4: "&a&l4. 마이그레이션 완료 후 데이터베이스 파일은 삭제할 수 있습니다"
+  notice: "&e&l주의: PMS-TPA 데이터가 비어있을 때만 가져오며, 기존 데이터는 덮어쓰지 않습니다"
+  start: "&a&lHuskHomes 데이터베이스 파일에서 마이그레이션 시작: <target>"
+  no_file: "&e&lHuskHomes 데이터베이스 파일을 찾을 수 없습니다. 튜토리얼에 따라 파일을 먼저 넣으세요!"
+  done_homes: "&a&l집 데이터 가져오기: &6&l<target>"
+  done_warps: "&a&l워프 데이터 가져오기: &6&l<target>"
+  done_back: "&a&l사망 복귀 지점 데이터 가져오기: &6&l<target>"
+  finish: "&a&l데이터 마이그레이션이 완료되었습니다!"
+  error: "&c&l데이터 마이그레이션 실패: <message>"
 system.config_migrated: "&a&l구버전 설정 파일을 백업 후 마이그레이션합니다"
 system.debug_warning: "&c&l디버그 모드가 활성화되었습니다 (사용 후 비활성화하세요)"
 
 #=======================
 # 업데이트
-#=======================
-update.checking: "&a&l업데이트 확인 중..."
-update.available: "&a&l새 버전 &6&lTPA-v<target>&a&l 사용 가능: https://modrinth.com/plugin/tpa.66666/versions"
-update.latest: "&a&l최신 버전입니다"
-update.failed: "&c&l업데이트 확인 실패"

@@ -4,7 +4,7 @@
 # Βασικές ρυθμίσεις
 #=======================
 prefix: "&a&l> "
-console_prefix: "&7&l[TPA] "
+console_prefix: "&7&l[PMS-TPA] "
 not_online_players: "Δεν υπάρχουν συνδεδεμένοι παίκτες"
 not_warps: "Δεν υπάρχουν διαθέσιμα σημεία μεταφοράς"
 not_homes: "Δεν υπάρχουν διαθέσιμα σπίτια"
@@ -43,6 +43,7 @@ request.to_here: "&a&lΟ παίκτης &6&l<target> &a&lθέλει να μετ�
 request.to_target: "&a&lΟ παίκτης &6&l<target> &a&lσας προσκαλεί! Λήγει σε &6&l<seconds> &a&lδευτερόλεπτα!"
 request.sent_success: "&a&lΑίτημα μεταφοράς στάλθηκε στον &6&l<target>!"
 request.timeout_notice: "&a&lΤο αίτημα ισχύει για &6&l<seconds> &a&lδευτερόλεπτα!"
+request.tpaall_sent: "&a&lΣτάλθηκαν αιτήματα τηλεμεταφοράς σε &6&l<target> &a&lπαίκτες online, αναμονή αποδοχής!"
 request.expired_from: "&c&lΑίτημα από &6&l<target> &c&lέληξε!"
 request.expired_to: "&c&lΤο αίτημά σας στον &6&l<target> &c&lέληξε!"
 
@@ -76,6 +77,9 @@ spawn.teleport_success: "&a&lΜεταφερθήκατε στο κεντρικό 
 # Τελευταία τοποθεσία
 #=======================
 back.teleport_success: "&a&lΜεταφερθήκατε στην τελευταία σας τοποθεσία!"
+back.death_message: "&a&lΕπιστροφή στο σημείο θανάτου;"
+back.death_return_button: "&a&l[⏪ Επιστροφή]"
+back.death_click_hint: "&a&lΚάντε κλικ για να επιστρέψετε στο σημείο θανάτου"
 
 #=======================
 # Τυχαία μεταφορά
@@ -159,6 +163,8 @@ teleport.generic_success: "&a&lΜεταφερθήκατε στο &6&l<target>"
 teleport.tpall.to_target: "&a&lΔιαχειριστής σας μετέφερε στο &6&l<target>"
 teleport.tpall.to_self: "&a&lΔιαχειριστής μετέφερε όλους σε εσάς"
 teleport.tpall.success: "&a&lΌλοι μεταφέρθηκαν στο &6&l<target>"
+teleport.tphere.success: "&a&lForce-teleported &6&l<target> &a&l to you"
+blacklist.clear_success: "&a&lYour blacklist has been cleared!"
 teleport.logout_location: "&a&lΜεταφερθήκατε στην τοποθεσία αποσύνδεσης του &6&l<target>"
 
 #=======================
@@ -168,13 +174,24 @@ system.config_reloaded: "&a&lΕπαναφόρτωση ρυθμίσεων!"
 system.plugin_loaded: "&a&lΤο πρόσθετο φορτώθηκε! Έκδοση: &6&l<target>"
 system.plugin_unloaded: "&c&lΤο πρόσθετο απενεργοποιήθηκε!"
 system.config_migrated_success: "&a&lΕπιτυχής μετεγκατάσταση ρυθμίσεων!"
+migration:
+  title: "&6&l=========== Οδηγός μετεγκατάστασης δεδομένων PMS-TPA ==========="
+  step1: "&a&l1. Τοποθετήστε το αρχείο βάσης δεδομένων HuskHomes στο plugins/PMS-TPA/data/"
+  step1_sqlite: "&a&l   - Αρχείο βάσης SQLite: HuskHomesData.db"
+  step1_h2: "&a&l   - Αρχείο βάσης H2: HuskHomesData.h2.mv.db ή HuskHomesData.h2.db"
+  step2: "&a&l2. Αν το αρχείο είναι ακόμα στο plugins/HuskHomes/, ανιχνεύεται αυτόματα"
+  step3: "&a&l3. Πληκτρολογήστε ξανά /tpa migrate για να ξεκινήσει η μετεγκατάσταση"
+  step4: "&a&l4. Μπορείτε να διαγράψετε το αρχείο μετά τη μετεγκατάσταση"
+  notice: "&e&lΣημείωση: τα δεδομένα εισάγονται μόνο αν τα δεδομένα PMS-TPA είναι κενά· τα υπάρχοντα δεν αντικαθίστανται"
+  start: "&a&lΈναρξη μετεγκατάστασης από το αρχείο HuskHomes: <target>"
+  no_file: "&e&lΔεν βρέθηκε αρχείο βάσης δεδομένων HuskHomes. Τοποθετήστε το πρώτα σύμφωνα με τον οδηγό!"
+  done_homes: "&a&lΕισήχθησαν σπίτια: &6&l<target>"
+  done_warps: "&a&lΕισήχθησαν warp: &6&l<target>"
+  done_back: "&a&lΕισήχθησαν σημεία επιστροφής θανάτου: &6&l<target>"
+  finish: "&a&lΗ μετεγκατάσταση δεδομένων ολοκληρώθηκε!"
+  error: "&c&lΗ μετεγκατάσταση δεδομένων απέτυχε: <message>"
 system.config_migrated: "&a&lΕντοπίστηκε παλιά έκδοση ρυθμίσεων (δημιουργήθηκε αντίγραφο)"
 system.debug_warning: "Προσοχή: Ενεργή λειτουργία debug!"
 
 #=======================
 # Ενημερώσεις
-#=======================
-update.checking: "&a&lΈλεγχος για ενημερώσεις..."
-update.available: "&a&lΝέα έκδοση &6&lTPA-v<target> &a&lδιαθέσιμη: https://modrinth.com/plugin/tpa.66666/versions"
-update.latest: "&a&lΈχετε την τελευταία έκδοση"
-update.failed: "&c&lΑποτυχία ελέγχου ενημερώσεων!"

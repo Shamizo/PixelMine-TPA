@@ -4,7 +4,7 @@
 # Perusasetukset
 #=======================
 prefix: "&a&l> "
-console_prefix: "&7&l[TPA] "
+console_prefix: "&7&l[PMS-TPA] "
 not_online_players: "Ei pelaajia paikalla"
 not_warps: "Ei saatavilla olevia warp-pisteitä"
 not_homes: "Ei määritettyjä koteja"
@@ -43,6 +43,7 @@ request.to_here: "&a&lPelaaja &6&l<target> &a&lhaluaa teleportata luoksesi! (&6&
 request.to_target: "&a&lPelaaja &6&l<target> &a&lkutsuu sinut luokseen! (&6&l<seconds>s&a&l)"
 request.sent_success: "&a&lPyyntö lähetetty pelaajalle &6&l<target>"
 request.timeout_notice: "&a&lVoimassa &6&l<seconds> &a&lsekunnin ajan"
+request.tpaall_sent: "&a&lTeleporttipyynnöt lähetetty &6&l<target> &a&lpelaajalle, odotetaan hyväksyntää!"
 request.expired_from: "&c&lPyyntö pelaajalta &6&l<target> &c&lvanhentui"
 request.expired_to: "&c&lPyyntösi pelaajalle &6&l<target> &c&lvanhentui"
 
@@ -76,6 +77,9 @@ spawn.teleport_success: "&a&lTeleportattu spawn-pisteeseen!"
 # Edellinen sijainti
 #=======================
 back.teleport_success: "&a&lPalattu edelliseen sijaintiin!"
+back.death_message: "&a&lPalataanko kuolinpaikkaan?"
+back.death_return_button: "&a&l[⏪ Palaa]"
+back.death_click_hint: "&a&lKlikkaa palataksesi kuolinpaikkaan"
 
 #=======================
 # Satunnainen teleportti
@@ -159,6 +163,8 @@ teleport.generic_success: "&a&lTeleportattu kohteeseen &6&l<target>"
 teleport.tpall.to_target: "&a&lYlläpitäjä teleporttasi sinut &6&l<target>"
 teleport.tpall.to_self: "&a&lYlläpitäjä toi kaikki pelaajat luoksesi"
 teleport.tpall.success: "&a&lKaikki teleportattu kohteeseen &6&l<target>"
+teleport.tphere.success: "&a&lForce-teleported &6&l<target> &a&l to you"
+blacklist.clear_success: "&a&lYour blacklist has been cleared!"
 teleport.logout_location: "&a&lTeleportattu pelaajan &6&l<target> &a&lviimeiseen sijaintiin"
 
 #=======================
@@ -168,13 +174,24 @@ system.config_reloaded: "&a&lAsetukset ladattu uudelleen!"
 system.plugin_loaded: "&a&lLaajennus ladattu! Versio: &6&l<target>"
 system.plugin_unloaded: "&c&lLaajennus poistettu!"
 system.config_migrated_success: "&a&lAsetusten migraatio valmis!"
+migration:
+  title: "&6&l=========== PMS-TPA tiedonsiirron opas ==========="
+  step1: "&a&l1. Aseta HuskHomes-tietokantatiedosto hakemistoon plugins/PMS-TPA/data/"
+  step1_sqlite: "&a&l   - SQLite-tietokantatiedosto: HuskHomesData.db"
+  step1_h2: "&a&l   - H2-tietokantatiedosto: HuskHomesData.h2.mv.db tai HuskHomesData.h2.db"
+  step2: "&a&l2. Jos tiedosto on vielä plugins/HuskHomes/ssa, se tunnistetaan automaattisesti"
+  step3: "&a&l3. Kirjoita /tpa migrate uudelleen aloittaaksesi siirron"
+  step4: "&a&l4. Voit poistaa tiedoston siirron jälkeen"
+  notice: "&e&lHuom: tiedot tuodaan vain, jos PMS-TPA-tiedot ovat tyhjiä; olemassa olevia ei ylikirjoiteta"
+  start: "&a&lAloitetaan siirto HuskHomes-tietokantatiedostosta: <target>"
+  no_file: "&e&lHuskHomes-tietokantatiedostoa ei löytynyt. Aseta tiedosto ensin oppaan mukaan!"
+  done_homes: "&a&lKodit tuotu: &6&l<target>"
+  done_warps: "&a&lWarpparit tuotu: &6&l<target>"
+  done_back: "&a&lKuolinpalautuspisteet tuotu: &6&l<target>"
+  finish: "&a&lTiedonsiirto valmis!"
+  error: "&c&lTiedonsiirto epäonnistui: <message>"
 system.config_migrated: "&a&lVanhat asetukset migroidaan (varmuuskopio luotu)"
 system.debug_warning: "&c&lDebug-tila päällä - sammuta käytön jälkeen!"
 
 #=======================
 # Päivitykset
-#=======================
-update.checking: "&a&lTarkistetaan päivityksiä..."
-update.available: "&a&lUusi versio &6&lTPA-v<target>&a&l saatavilla: https://modrinth.com/plugin/tpa.66666/versions"
-update.latest: "&a&lUusin versio asennettuna"
-update.failed: "&c&lPäivitysten tarkistus epäonnistui"

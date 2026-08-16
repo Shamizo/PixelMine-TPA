@@ -1,0 +1,43 @@
+name: Build
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '25'
+      - uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+      - name: Build
+        run: |
+          for i in 1 2 3 4 5; do
+            mvn package -DskipTests -q && exit 0
+            echo "Build attempt $i failed, retrying in 15s..."
+            sleep 15
+          done
+          exit 1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PMS-TPA
+          path: target/PMS-TPA-*.jar
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: build-${{ github.sha }}
+          name: PMS-TPA Build
+          files: target/PMS-TPA-*.jar
+          prerelease: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

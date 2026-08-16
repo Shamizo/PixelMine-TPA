@@ -75,17 +75,26 @@ public abstract class PlayerToPlayerRequest extends Request {
 
     protected void teleport()  {
         REQUEST_QUEUE.remove(targetPlayer);
-        if (getConfig().isEnableTeleportDelay(requestPlayer)) checkMoveTimer.cancel();
+        if (getConfig().isEnableTeleportDelay(requestPlayer)) {
+            checkMoveTimer.cancel();
+            if (!isNull(countdownMessageTimer)) countdownMessageTimer.cancel();
+        }
+    }
+
+    @Override
+    protected boolean belongsTo(Player player) {
+        return requestPlayer.equals(player) || targetPlayer.equals(player);
     }
 
     protected void checkError(CommandSender requestObject, String[] args, CommandType commandType)   {
-        String command = commandType == CommandType.TPA ? "tpa" : "tphere";
+        String command = commandType == CommandType.TPA ? "tpa" : "tpahere";
         PermissionType permissionType = commandType == CommandType.TPA ? PermissionType.TPA : PermissionType.TP_HERE;
         if (!(requestObject instanceof Player)) throw new ErrorConsoleRestrictedException(requestObject);
         requestPlayer = ((Player) requestObject);
         requestPlayerName = requestPlayer.getName();
         if (!getConfig().isEnableCommand(commandType)) throw new ErrorCommandDisabledException(requestPlayer);
         if (!getConfig().hasPermission(requestPlayer, permissionType)) throw new ErrorPermissionDeniedException(requestPlayer);
+        if (getConfig().isDisableWorld(commandType, requestPlayer.getWorld())) throw new ErrorWorldDisabledException(requestPlayer);
         if (args.length != 1) throw new ErrorSyntaxTpaException(requestPlayer, command);
         targetPlayerName = args[args.length - 1];
         targetPlayer = Bukkit.getPlayerExact(targetPlayerName);

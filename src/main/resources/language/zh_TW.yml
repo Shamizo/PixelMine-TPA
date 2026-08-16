@@ -4,7 +4,7 @@
 # 基礎設定
 #=======================
 prefix: "&a&l> "
-console_prefix: "&7&l[TPA] "
+console_prefix: "&7&l[PMS-TPA] "
 not_online_players: "無線上玩家"
 not_warps: "目前無可用傳送點"
 not_homes: "目前無可用家園"
@@ -43,6 +43,7 @@ request.to_here: "&a&l玩家 &6&l<target> &a&l想傳送到您的位置，該請�
 request.to_target: "&a&l玩家 &6&l<target> &a&l邀請您傳送到對方位置，該請求 &6&l<seconds> &a&l秒後失效！"
 request.sent_success: "&a&l已向 &6&l<target> &a&l發送傳送請求！"
 request.timeout_notice: "&a&l請求將在 &6&l<seconds> &a&l秒內有效！"
+request.tpaall_sent: "&a&l已向 &6&l<target> &a&l名線上玩家發送傳送請求，等待對方接受！"
 request.expired_from: "&c&l來自 &6&l<target> &c&l的傳送請求已失效！"
 request.expired_to: "&c&l傳送給 &6&l<target> &c&l的請求已失效！"
 
@@ -76,6 +77,9 @@ spawn.teleport_success: "&a&l已傳送至 &6&l主城！"
 # 位置記錄
 #=======================
 back.teleport_success: "&a&l已傳送至 &6&l上次位置！"
+back.death_message: "&a&l您想返回死亡點？"
+back.death_return_button: "&a&l[⏪ 點擊傳送]"
+back.death_click_hint: "&a&l點擊傳送回死亡點"
 
 #=======================
 # 隨機傳送
@@ -159,6 +163,8 @@ teleport.generic_success: "&a&l已成功傳送至 &6&l<target>"
 teleport.tpall.to_target: "&a&l管理員已將您傳送至 &6&l<target>"
 teleport.tpall.to_self: "&a&l所有玩家已傳送至您的位置"
 teleport.tpall.success: "&a&l已傳送所有線上玩家至 &6&l<target>"
+teleport.tphere.success: "&a&l已强制将 &6&l<target> &a&l传送到您身边"
+blacklist.clear_success: "&a&l您已清空黑名單！"
 teleport.logout_location: "&a&l已傳送至 &6&l<target> &a&l最後登出位置"
 
 #=======================
@@ -168,13 +174,24 @@ system.config_reloaded: "&a&l設定檔已重新載入！"
 system.plugin_loaded: "&a&l插件已啟用！目前版本：&6&l<target>"
 system.plugin_unloaded: "&c&l插件已停用！"
 system.config_migrated_success: "&a&l設定檔遷移完成！"
+migration:
+  title: "&6&l=========== PMS-TPA 資料遷移教學 ==========="
+  step1: "&a&l1. 將 HuskHomes 的資料庫檔案放入 plugins/PMS-TPA/data/ 目錄"
+  step1_sqlite: "&a&l   - SQLite 資料庫檔案：HuskHomesData.db"
+  step1_h2: "&a&l   - H2 資料庫檔案：HuskHomesData.h2.mv.db 或 HuskHomesData.h2.db"
+  step2: "&a&l2. 如果檔案還在預設位置 plugins/HuskHomes/ 下，插件也會自動偵測"
+  step3: "&a&l3. 再次輸入 /tpa migrate 開始遷移"
+  step4: "&a&l4. 遷移完成後可刪除資料庫檔案"
+  notice: "&e&l注意：僅當 PMS-TPA 對應資料為空時才會匯入，不會覆蓋已有資料"
+  start: "&a&l開始從 HuskHomes 資料庫檔案遷移：<target>"
+  no_file: "&e&l未找到 HuskHomes 資料庫檔案，請先按上方教學放置資料庫檔案後再執行！"
+  done_homes: "&a&l已匯入家資料：&6&l<target> &a&l個"
+  done_warps: "&a&l已匯入傳送點資料：&6&l<target> &a&l個"
+  done_back: "&a&l已匯入死亡返回點資料：&6&l<target> &a&l個"
+  finish: "&a&l資料遷移完成！"
+  error: "&c&l資料遷移失敗：<message>"
 system.config_migrated: "&a&l偵測到舊版設定檔，正在遷移（舊檔備份於backup目錄）"
 system.debug_warning: "&c&l偵錯模式已啟用，使用後請務必關閉！"
 
 #=======================
 # 更新系統
-#=======================
-update.checking: "&a&l正在檢查更新..."
-update.available: "&a&l發現新版本：&6&lTPA-v<target>&a&l 請至 &6&lhttps://modrinth.com/plugin/tpa.66666/versions &a&l查看"
-update.latest: "&a&l目前已是最新版本"
-update.failed: "&c&l檢查更新失敗，請確認網路連線！"

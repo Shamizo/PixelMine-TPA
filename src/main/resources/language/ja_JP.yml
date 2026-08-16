@@ -4,7 +4,7 @@
 # 基本設定
 #=======================
 prefix: "&a&l> "
-console_prefix: "&7&l[TPA] "
+console_prefix: "&7&l[PMS-TPA] "
 not_online_players: "オンラインプレイヤーがいません"
 not_warps: "利用可能なワープポイントがありません"
 not_homes: "設定されたホームがありません"
@@ -43,6 +43,7 @@ request.to_here: "&a&lプレイヤー &6&l<target> &a&lがあなたの位置へ�
 request.to_target: "&a&lプレイヤー &6&l<target> &a&lが自分の位置へ招待しています（&6&l<seconds>秒&a&l後期限切れ）"
 request.sent_success: "&a&l&6&l<target> &a&lへリクエストを送信しました"
 request.timeout_notice: "&a&lリクエスト有効時間 &6&l<seconds>秒"
+request.tpaall_sent: "&a&l&6&l<target> &a&l人のオンラインプレイヤーにテレポートリクエストを送信しました！"
 request.expired_from: "&c&l&6&l<target> &c&lからのリクエストが期限切れました"
 request.expired_to: "&c&l&6&l<target> &c&lへのリクエストが期限切れました"
 
@@ -76,6 +77,9 @@ spawn.teleport_success: "&a&lスポーン地点へテレポートしました！
 # 直前の位置
 #=======================
 back.teleport_success: "&a&l直前の位置へテレポートしました！"
+back.death_message: "&a&l死んだ場所に戻りますか？"
+back.death_return_button: "&a&l[⏪ 戻る]"
+back.death_click_hint: "&a&lクリックで死んだ場所に戻ります"
 
 #=======================
 # ランダムテレポート
@@ -159,6 +163,8 @@ teleport.generic_success: "&a&l&6&l<target> &a&lへテレポートしました"
 teleport.tpall.to_target: "&a&l管理者があなたを &6&l<target> &a&lへテレポートさせました"
 teleport.tpall.to_self: "&a&l管理者が全プレイヤーをあなたの位置へテレポートさせました"
 teleport.tpall.success: "&a&l全プレイヤーを &6&l<target> &a&lへテレポートしました"
+teleport.tphere.success: "&a&lForce-teleported &6&l<target> &a&l to you"
+blacklist.clear_success: "&a&lYour blacklist has been cleared!"
 teleport.logout_location: "&a&l&6&l<target> &a&lの最終ログアウト位置へテレポートしました"
 
 #=======================
@@ -168,13 +174,24 @@ system.config_reloaded: "&a&l設定ファイルをリロードしました"
 system.plugin_loaded: "&a&lプラグイン読み込み完了！バージョン：&6&l<target>"
 system.plugin_unloaded: "&c&lプラグインをアンロードしました"
 system.config_migrated_success: "&a&l設定ファイルの移行が完了しました"
+migration:
+  title: "&6&l=========== PMS-TPA データ移行チュートリアル ==========="
+  step1: "&a&l1. HuskHomes のデータベースファイルを plugins/PMS-TPA/data/ に置いてください"
+  step1_sqlite: "&a&l   - SQLite データベースファイル：HuskHomesData.db"
+  step1_h2: "&a&l   - H2 データベースファイル：HuskHomesData.h2.mv.db または HuskHomesData.h2.db"
+  step2: "&a&l2. ファイルが plugins/HuskHomes/ にある場合も自動で検出されます"
+  step3: "&a&l3. もう一度 /tpa migrate と入力して移行を開始"
+  step4: "&a&l4. 移行完了後、データベースファイルは削除できます"
+  notice: "&e&l注意：PMS-TPA のデータが空の場合のみインポートされ、既存データは上書きされません"
+  start: "&a&lHuskHomes データベースファイルから移行を開始：<target>"
+  no_file: "&e&lHuskHomes データベースファイルが見つかりません。チュートリアルに従って先に配置してください！"
+  done_homes: "&a&lホームデータをインポート：&6&l<target>"
+  done_warps: "&a&lワープデータをインポート：&6&l<target>"
+  done_back: "&a&l死亡復帰ポイントをインポート：&6&l<target>"
+  finish: "&a&lデータ移行が完了しました！"
+  error: "&c&lデータ移行に失敗しました：<message>"
 system.config_migrated: "&a&l旧設定ファイルを検出、自動バックアップ後に移行します"
 system.debug_warning: "&c&lデバッグモードが有効です（使用後は無効にしてください）"
 
 #=======================
 # アップデート
-#=======================
-update.checking: "&a&lアップデート確認中..."
-update.available: "&a&l新しいバージョン &6&lTPA-v<target> &a&lが利用可能です：https://modrinth.com/plugin/tpa.66666/versions"
-update.latest: "&a&l最新バージョンです"
-update.failed: "&c&lアップデート確認に失敗しました"

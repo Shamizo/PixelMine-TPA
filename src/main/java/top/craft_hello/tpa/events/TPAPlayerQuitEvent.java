@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
+import top.craft_hello.tpa.abstracts.Request;
 import top.craft_hello.tpa.objects.PlayerDataConfig;
 
 public class TPAPlayerQuitEvent implements Listener {
@@ -14,6 +15,7 @@ public class TPAPlayerQuitEvent implements Listener {
         Location logoutLocation = player.getLocation();
         PlayerDataConfig playerDataConfig = PlayerDataConfig.getPlayerData(player);
         playerDataConfig.setLogoutLocation(logoutLocation);
+        Request.removePlayerRequest(player);
         PlayerDataConfig.removePlayerData(player);
     }
 }

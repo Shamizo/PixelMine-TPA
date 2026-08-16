@@ -1,7 +1,7 @@
 name: ${project.name}
 version: ${project.version}
-main: top.craft_hello.tpa.TPA
-description: 一个支持 Folia 的简易传送插件，支持 Bukkit/Spigot/Paper/Folia
+main: top.craft_hello.tpa.PMS_TPA
+description: 一个支持 Folia 和 Canvas 的简易传送插件，支持 Bukkit/Spigot/Paper/Folia/Canvas
 api-version: '1.13'
 author: WarSkyGod
 website: https://github.com/WarSkyGod/TPA
@@ -13,9 +13,6 @@ permissions:
   tpa.reload:
     default: op
     description: "可使用 /reload 命令重新加载配置文件"
-  tpa.version:
-    default: op
-    description: "拥有这个权限的玩家会收到插件更新通知，可使用 /tpa version 来检查插件更新"
   tpa.nodelay:
     default: false
     description: "拥有这个权限的玩家传送将不受命令使用后的等待时间限制"
@@ -40,9 +37,18 @@ permissions:
   tpa.tpa:
     default: false
     description: "可使用 /tpa 命令请求传送到指定玩家的位置（默认关闭权限检查）"
-  tpa.tphere:
+  tpa.tpahere:
     default: false
-    description: "可使用 /tphere 命令请求指定玩家传送到你的位置（默认关闭权限检查）"
+    description: "可使用 /tpahere 命令请求指定玩家传送到你的位置（默认关闭权限检查）"
+  tpa.tphere:
+    default: op
+    description: "可使用 /tphere 命令强制将指定玩家传送到你身边"
+  tpa.tp:
+    default: op
+    description: "可使用 /tp 命令强制传送（/tp <玩家> 传送到玩家身边，/tp <玩家1> <玩家2> 将玩家1传送到玩家2）"
+  tpa.tpaall:
+    default: op
+    description: "可使用 /tpaall 命令向所有在线玩家发送传送到你身边的请求"
   tpa.rtp:
     default: false
     description: "可使用 /rtp 命令随机在一定范围内传送（默认关闭权限检查）"
@@ -84,9 +90,18 @@ commands:
   tpa:
     usage: /tpa <玩家名称>
     description: 向玩家发送传送请求
+  tpahere:
+    usage: /tpahere <玩家名称>
+    description: 请求玩家传送到你身边
   tphere:
     usage: /tphere <玩家名称>
-    description: 请求玩家传送到你身边
+    description: 强制将指定玩家传送到你身边
+  tp:
+    usage: /tp <玩家名称> [玩家名称]
+    description: 强制传送到指定玩家身边（仅管理员）
+  tpaall:
+    usage: /tpaall
+    description: 向所有在线玩家发送传送到你身边的请求
   tpall:
     usage: /tpall [player/warp/spawn] [玩家名称/传送点名称]
     description: 强制将所有在线玩家传送到目标位置（如果不加参数默认传送到使用者身边）

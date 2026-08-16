@@ -39,6 +39,79 @@ public class ErrorCheckUtil{
                 case TP_HERE:
                     new TphereRequest(sender, args);
                     break;
+                case TP_HERE_FORCE:
+                    if (!(sender instanceof Player)) throw new ErrorConsoleRestrictedException(sender);
+                    executorPlayer = (Player) sender;
+                    if (!config.hasPermission(executorPlayer, PermissionType.TP_HERE_FORCE)) throw new ErrorPermissionDeniedException(executorPlayer);
+                    if (args.length != 1) throw new ErrorSyntaxTpaException(executorPlayer, command);
+                    targetPlayerName = args[args.length - 1];
+                    targetPlayer = Bukkit.getPlayerExact(targetPlayerName);
+                    if (isNull(targetPlayer) || !targetPlayer.isOnline()) throw new ErrorTargetOfflineException(executorPlayer, targetPlayerName);
+                    if (executorPlayer.equals(targetPlayer)) throw new ErrorSelfOperationException(executorPlayer);
+                    teleport(targetPlayer, executorPlayer.getLocation());
+                    if (getConfig().isEnableTitleMessage()) {
+                        SendMessageUtil.titleCountdownOverMessage(targetPlayer, executorPlayer.getName());
+                        if (getConfig().isEnableSound()) PlayerSchedulerUtil.playSound(targetPlayer, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+                    }
+                    SendMessageUtil.adminTpYouToMessage(targetPlayer, executorPlayer.getName());
+                    SendMessageUtil.tphereForceSuccess(executorPlayer, targetPlayerName);
+                    return;
+                case TP:
+                    if (!(sender instanceof Player)) throw new ErrorConsoleRestrictedException(sender);
+                    executorPlayer = (Player) sender;
+                    if (!config.hasPermission(executorPlayer, PermissionType.TP)) throw new ErrorPermissionDeniedException(executorPlayer);
+                    if (args.length == 1) {
+                        targetPlayerName = args[args.length - 1];
+                        targetPlayer = Bukkit.getPlayerExact(targetPlayerName);
+                        if (isNull(targetPlayer) || !targetPlayer.isOnline()) throw new ErrorTargetOfflineException(executorPlayer, targetPlayerName);
+                        if (executorPlayer.equals(targetPlayer)) throw new ErrorSelfOperationException(executorPlayer);
+                        teleport(executorPlayer, targetPlayer.getLocation());
+                        if (getConfig().isEnableTitleMessage()) {
+                            SendMessageUtil.titleCountdownOverMessage(executorPlayer, targetPlayerName);
+                            if (getConfig().isEnableSound()) PlayerSchedulerUtil.playSound(executorPlayer, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+                        }
+                        SendMessageUtil.youTeleportedToMessage(executorPlayer, targetPlayerName);
+                        return;
+                    }
+
+                    if (args.length == 2) {
+                        targetPlayerName = args[args.length - 1];
+                        targetPlayer = Bukkit.getPlayerExact(targetPlayerName);
+                        if (isNull(targetPlayer) || !targetPlayer.isOnline()) throw new ErrorTargetOfflineException(executorPlayer, targetPlayerName);
+                        Player sourcePlayer = Bukkit.getPlayerExact(args[args.length - 2]);
+                        if (isNull(sourcePlayer) || !sourcePlayer.isOnline()) throw new ErrorTargetOfflineException(executorPlayer, args[args.length - 2]);
+                        teleport(sourcePlayer, targetPlayer.getLocation());
+                        if (getConfig().isEnableTitleMessage()) {
+                            SendMessageUtil.titleCountdownOverMessage(sourcePlayer, targetPlayerName);
+                            if (getConfig().isEnableSound()) PlayerSchedulerUtil.playSound(sourcePlayer, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+                        }
+                        SendMessageUtil.adminTpYouToMessage(sourcePlayer, targetPlayerName);
+                        return;
+                    }
+
+                    throw new ErrorSyntaxTpaException(executorPlayer, command);
+                case TPA_ALL:
+                    if (!(sender instanceof Player)) throw new ErrorConsoleRestrictedException(sender);
+                    executorPlayer = (Player) sender;
+                    if (!config.isEnableCommand(CommandType.TPA_ALL)) throw new ErrorCommandDisabledException(executorPlayer);
+                    if (!config.hasPermission(executorPlayer, PermissionType.TPA_ALL)) throw new ErrorPermissionDeniedException(executorPlayer);
+                    if (config.isDisableWorld(CommandType.TPA_ALL, executorPlayer.getWorld())) throw new ErrorWorldDisabledException(executorPlayer);
+                    if (args.length != 0) throw new ErrorSyntaxTpAllException(executorPlayer, command);
+                    if (config.isEnableCommand(CommandType.TPA, CommandType.TP_HERE)) {
+                        List<Player> requestTargets = new ArrayList<>(Bukkit.getOnlinePlayers());
+                        requestTargets.remove(executorPlayer);
+                        if (requestTargets.isEmpty()) throw new ErrorNoOnlinePlayersException(executorPlayer);
+                        for (Player onlinePlayer : requestTargets) {
+                            try {
+                                new TphereRequest(sender, new String[]{onlinePlayer.getName()});
+                            } catch (Exception ignored) {
+                            }
+                        }
+                        SendMessageUtil.tpaAllRequestSent(executorPlayer, requestTargets.size());
+                    } else {
+                        throw new ErrorCommandDisabledException(executorPlayer);
+                    }
+                    return;
                 case RTP:
                     new RtpRequest(sender, args);
                     break;
@@ -178,6 +251,43 @@ public class ErrorCheckUtil{
                         }
                     }
                     throw new ErrorSyntaxGenericException(executorPlayer, command);
+                case BLACKLIST:
+                    if (!(sender instanceof Player)) throw new ErrorConsoleRestrictedException(sender);
+                    executorPlayer = (Player) sender;
+                    if (!config.isEnableCommand(CommandType.TPA, CommandType.TP_HERE)) throw new ErrorCommandDisabledException(executorPlayer);
+                    if (!config.hasPermission(executorPlayer, PermissionType.DENYS)) throw new ErrorPermissionDeniedException(executorPlayer);
+                    playerDataConfig = PlayerDataConfig.getPlayerData(executorPlayer);
+                    if (args.length == 0) {
+                        SendMessageUtil.denysMessage(executorPlayer, playerDataConfig.getDenyList(executorPlayer));
+                        return;
+                    }
+
+                    if (args.length == 1 && "clear".equalsIgnoreCase(args[0])) {
+                        playerDataConfig.clearDenyList();
+                        SendMessageUtil.clearDenySuccess(executorPlayer);
+                        return;
+                    }
+
+                    if (args.length == 2) {
+                        targetPlayerName = args[args.length - 1];
+                        OfflinePlayer target = Bukkit.getOfflinePlayer(targetPlayerName);
+                        String targetUUID = target.getUniqueId().toString();
+                        switch (args[args.length - 2].toLowerCase()) {
+                            case "add":
+                                if (executorPlayer.getUniqueId().equals(target.getUniqueId())) throw new ErrorSelfOperationException(executorPlayer);
+                                if (playerDataConfig.isDeny(targetUUID)) throw new ErrorAlreadyBlacklistedException(executorPlayer);
+                                if (REQUEST_QUEUE.containsKey(executorPlayer)) PlayerSchedulerUtil.performCommand(executorPlayer, "tpdeny");
+                                playerDataConfig.addDeny(targetUUID);
+                                SendMessageUtil.addDenysSuccess(executorPlayer, targetPlayerName);
+                                return;
+                            case "remove":
+                                playerDataConfig.checkIsNoDeny(targetUUID, executorPlayer);
+                                playerDataConfig.delDeny(targetUUID);
+                                SendMessageUtil.removeDenySuccess(executorPlayer, targetPlayerName);
+                                return;
+                        }
+                    }
+                    throw new ErrorSyntaxGenericException(executorPlayer, command);
                 case WARP:
                     if (args.length == 0){
                         List<String> warpNameList = LoadingConfigUtil.getWarpConfig().getWarpNameList();
@@ -293,14 +403,14 @@ public class ErrorCheckUtil{
                     playerDataConfig.setLanguage(languageStr);
                     playerDataConfig.setSetlang(true);
                     break;
-                case VERSION:
-                    if (!config.isEnableCommand(commandType)) throw new ErrorCommandDisabledException(sender);
-                    if (!config.hasPermission(sender, PermissionType.VERSION)) throw new ErrorPermissionDeniedException(sender);
-                    VersionUtil.updateCheck(sender);
-                    break;
                 case RELOAD:
                     if (!config.hasPermission(sender, PermissionType.RELOAD)) throw new ErrorPermissionDeniedException(sender);
                     LoadingConfigUtil.reloadALLConfig(sender);
+                    break;
+                case MIGRATE:
+                    if (!config.hasPermission(sender, PermissionType.ADMIN)) throw new ErrorPermissionDeniedException(sender);
+                    SendMessageUtil.migrationTutorial(sender);
+                    SQLiteUtil.migrateHuskHomesData(sender);
                     break;
                 default:
                     throw new ErrorRuntimeException(sender, "在 utils.ErrorCheckUtil 46 行，请联系开发者（https://github.com/WarSkyGod/TPA/issues）");

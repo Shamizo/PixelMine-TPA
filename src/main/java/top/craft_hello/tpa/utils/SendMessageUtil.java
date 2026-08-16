@@ -38,21 +38,6 @@ public class SendMessageUtil {
         sendMessage(sender, getLanguage(sender).getFormatPrefixMessage(sender, "system.config_migrated_success"));
     }
 
-    // 正在检查更新消息
-    public static void checkUpdate(CommandSender sender) {
-        sendMessage(sender, getLanguage(sender).getFormatPrefixMessage(sender, "update.checking"));
-    }
-
-    // 发现更新消息
-    public static void pluginUpdateMessage(CommandSender sender, String latestVersion) {
-        sendMessage(sender, getLanguage(sender).getFormatPrefixMessage(sender, "update.available", latestVersion));
-    }
-
-    // 当前已是最新版本消息
-    public static void pluginLatestVersion(CommandSender sender) {
-        sendMessage(sender, getLanguage(sender).getFormatPrefixMessage(sender, "update.latest"));
-    }
-
     // 插件加载消息
     public static void pluginLoaded(CommandSender sender, String pluginVersion) {
         sendMessage(sender, getLanguage().getFormatPrefixMessage("system.plugin_loaded", pluginVersion));
@@ -312,6 +297,48 @@ public class SendMessageUtil {
         sendMessage(sender, getLanguage(sender).getFormatPrefixMessage(sender, "teleport.tpall.success", targetName));
     }
 
+    // tpaall 请求发送成功消息
+    public static void tpaAllRequestSent(Player executor, int count) {
+        sendMessage(executor, getLanguage(executor).getFormatPrefixMessage(executor, "request.tpaall_sent", String.valueOf(count)));
+    }
+
+    // 数据迁移教程
+    public static void migrationTutorial(CommandSender sender) {
+        LanguageConfig language = getLanguage(sender);
+        sendMessage(sender, language.getFormatPrefixMessage(sender, "migration.title"));
+        sendMessage(sender, language.getFormatPrefixMessage(sender, "migration.step1"));
+        sendMessage(sender, language.getFormatPrefixMessage(sender, "migration.step1_sqlite"));
+        sendMessage(sender, language.getFormatPrefixMessage(sender, "migration.step1_h2"));
+        sendMessage(sender, language.getFormatPrefixMessage(sender, "migration.step2"));
+        sendMessage(sender, language.getFormatPrefixMessage(sender, "migration.step3"));
+        sendMessage(sender, language.getFormatPrefixMessage(sender, "migration.step4"));
+        sendMessage(sender, language.getFormatPrefixMessage(sender, "migration.notice"));
+    }
+
+    // 数据迁移开始消息
+    public static void migrationStart(CommandSender sender, String fileName) {
+        sendMessage(sender, getLanguage(sender).getFormatPrefixMessage(sender, "migration.start", fileName));
+    }
+
+    // 未找到数据库文件消息
+    public static void migrationNoFile(CommandSender sender) {
+        sendMessage(sender, getLanguage(sender).getFormatPrefixMessage(sender, "migration.no_file"));
+    }
+
+    // 数据迁移完成消息
+    public static void migrationDone(CommandSender sender, int homes, int warps, int back) {
+        LanguageConfig language = getLanguage(sender);
+        sendMessage(sender, language.getFormatPrefixMessage(sender, "migration.done_homes", String.valueOf(homes)));
+        sendMessage(sender, language.getFormatPrefixMessage(sender, "migration.done_warps", String.valueOf(warps)));
+        sendMessage(sender, language.getFormatPrefixMessage(sender, "migration.done_back", String.valueOf(back)));
+        sendMessage(sender, language.getFormatPrefixMessage(sender, "migration.finish"));
+    }
+
+    // 数据迁移失败消息
+    public static void migrationError(CommandSender sender, String message) {
+        sendMessage(sender, getLanguage(sender).getFormatPrefixMessage(sender, "migration.error", message));
+    }
+
     // 已传送到传送点消息
     public static void tpToWarpMessage(Player executor, String warpName) {
         sendMessage(executor, getLanguage(executor).getFormatPrefixMessage(executor, "warp.teleport_success", warpName));
@@ -335,6 +362,16 @@ public class SendMessageUtil {
     // 成功移出黑名单消息
     public static void removeDenySuccess(Player executor, String targetName) {
         sendMessage(executor, getLanguage(executor).getFormatPrefixMessage(executor, "blacklist.remove_success", targetName));
+    }
+
+    // 成功清空黑名单消息
+    public static void clearDenySuccess(Player executor) {
+        sendMessage(executor, getLanguage(executor).getFormatPrefixMessage(executor, "blacklist.clear_success"));
+    }
+
+    // 强制传送成功消息
+    public static void tphereForceSuccess(Player executor, String targetName) {
+        sendMessage(executor, getLanguage(executor).getFormatPrefixMessage(executor, "teleport.tphere.success", targetName));
     }
 
     // 成功保存家消息
@@ -385,6 +422,19 @@ public class SendMessageUtil {
     public static void backLastLocationSuccessMessage(Player executor) {
         LanguageConfig language = getLanguage(executor);
         sendMessage(executor, language.getFormatPrefixMessage(executor, "back.teleport_success", language.getMessage("last_location")));
+    }
+
+    // 死亡后返回死亡点消息
+    public static void returnByDeathMessage(Player executor) {
+        LanguageConfig language = getLanguage(executor);
+        JsonMessage jsonMessage = new JsonMessage(executor, language.getPrefix(executor))
+                .addText(language.getMessage("back.death_message"))
+                .addText()
+                .addText(language.getMessage("back.death_return_button"))
+                .addInsertion("/back")
+                .addClickEvent(ClickEventType.RUN_COMMAND, "/back")
+                .addHoverEvent(HoverEventType.SHOW_TEXT, language.getFormatMessage("back.death_click_hint"));
+        jsonMessage.sendMessage();
     }
 
     // 传送到最后下线地点成功消息

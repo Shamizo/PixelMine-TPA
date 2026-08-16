@@ -5,7 +5,7 @@ import org.bukkit.command.CommandSender;
 import static java.util.Objects.isNull;
 
 public enum PermissionType {
-    DEFAULT, VIP, VIP_PLUS, MVP, MVP_PLUS, MVP_PLUS_PLUS, ADMIN, RELOAD, VERSION, WARP, SET_WARP, DEL_WARP, HOME, SPAWN, SET_SPAWN, DEL_SPAWN, TPA, TP_HERE, TP_ALL, TP_LOGOUT, RTP, DENYS, BACK;
+    DEFAULT, VIP, VIP_PLUS, MVP, MVP_PLUS, MVP_PLUS_PLUS, ADMIN, RELOAD, WARP, SET_WARP, DEL_WARP, HOME, SPAWN, SET_SPAWN, DEL_SPAWN, TPA, TP_HERE, TPA_ALL, TP_ALL, TP_LOGOUT, RTP, DENYS, BACK, TP_HERE_FORCE, TP;
 
     public static String getPermission(PermissionType permissionType) {
         String permission;
@@ -30,9 +30,6 @@ public enum PermissionType {
                 break;
             case RELOAD:
                 permission = "tpa.reload";
-                break;
-            case VERSION:
-                permission = "tpa.version";
                 break;
             case WARP:
                 permission = "tpa.warp";
@@ -59,10 +56,19 @@ public enum PermissionType {
                 permission = "tpa.tpa";
                 break;
             case TP_HERE:
+                permission = "tpa.tpahere";
+                break;
+            case TP_HERE_FORCE:
                 permission = "tpa.tphere";
+                break;
+            case TPA_ALL:
+                permission = "tpa.tpaall";
                 break;
             case TP_ALL:
                 permission = "tpa.tpall";
+                break;
+            case TP:
+                permission = "tpa.tp";
                 break;
             case TP_LOGOUT:
                 permission = "tpa.tplogout";
@@ -84,7 +90,12 @@ public enum PermissionType {
 
     public static boolean hasPermission(CommandSender sender, PermissionType... permissionTypes) {
         if (!isNull(sender)) {
-            for (PermissionType permissionType : permissionTypes) if (!sender.hasPermission(PermissionType.getPermission(permissionType))) return false;
+            for (PermissionType permissionType : permissionTypes) {
+                if (!sender.hasPermission(PermissionType.getPermission(permissionType))) {
+                    if (permissionType == PermissionType.TP_HERE && sender.hasPermission("tpa.tphere")) continue;
+                    return false;
+                }
+            }
             return true;
         }
         return false;

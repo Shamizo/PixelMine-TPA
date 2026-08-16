@@ -1,8 +1,36 @@
 
+## Fork 3.3.1 changes
+
+This fork is based on [WarSkyGod/TPA 3.3.1](https://github.com/WarSkyGod/TPA). It includes the upstream Folia teleport deadlock fix while retaining the region-safe asynchronous `/rtp` implementation for Folia and Canvas.
+
+### Changes
+
+- **Upstream 3.3.1 fix**: `/home`, `/back`, and `/warp` dispatch teleport work asynchronously before handing it to FoliaLib's entity scheduler, avoiding a potentially blocking teleport path from a region thread.
+- **Region-safe `/rtp`**: target chunks are loaded with `world.getChunkAtAsync`, then height and block data are read on the target region callback.
+- **Bounded retries**: random destination generation makes at most 64 attempts.
+- **Callback lifecycle protection**: retries stop when the player disconnects, movement cancels the request, or RTP times out.
+- **Paper compatibility**: regular Paper and Bukkit servers retain the original synchronous destination-selection path.
+
+### Compatibility
+
+| Server | Compatibility | Path |
+|--------|---------------|------|
+| Folia | Supported | Asynchronous chunk and target-region reads |
+| Canvas | Supported | Asynchronous chunk and target-region reads |
+| Paper/Purpur | Supported | Original synchronous path |
+
+### Build
+
+```bash
+mvn package -DskipTests
+```
+
+**Required Java version**: Java 21
+
 ---
-# TPA
+# PMS-TPA
 [简体中文](https://github.com/WarSkyGod/TPA)  
-A simple teleportation plugin that supports **Folia**, compatible with **Bukkit/Spigot/Paper/Folia**.
+A simple teleportation plugin that supports **Folia/Canvas**, compatible with **Bukkit/Spigot/Paper/Folia/Canvas**.
 
 ## Features
 
@@ -16,7 +44,7 @@ A simple teleportation plugin that supports **Folia**, compatible with **Bukkit/
 ### Teleportation
 - **/tpa <player name>**  
   Send a teleportation request to a player.
-- **/tphere <player name>**  
+- **/tpahere <player name>**  
   Request a player to teleport to your location.
 - **/tpall [player/warp/spawn] [player name/warp name]**  
   Force all online players to teleport to the target location (if no parameters are provided, defaults to teleporting to the user's location).
@@ -62,8 +90,6 @@ A simple teleportation plugin that supports **Folia**, compatible with **Bukkit/
   Teleport to the previous location.
 - **/rtp**  
   Random teleportation.
-- **/tpa version**  
-  Check for plugin updates.
 - **/tpa setlang <clear/language>**  
   Set the client display language.
 - **/tpa reload**  
@@ -80,16 +106,14 @@ A simple teleportation plugin that supports **Folia**, compatible with **Bukkit/
   Allows using the `/tplogout` command to teleport to a player's last logout location.
 - **tpa.reload**  
   Allows using the `/reload` command to reload the configuration file.
-- **tpa.version**  
-  Players with this permission will receive plugin update notifications and can use `/tpa version` to check for updates.
 - **tpa.nodelay**  
   Players with this permission are not restricted by command cooldowns.
 
 ### Teleportation
 - **tpa.tpa**  
   Allows using the `/tpa` command to request teleportation to a specified player (permission check is disabled by default).
-- **tpa.tphere**  
-  Allows using the `/tphere` command to request a specified player to teleport to your location (permission check is disabled by default).
+- **tpa.tpahere**  
+  Allows using the `/tpahere` command to request a specified player to teleport to your location (permission check is disabled by default).
 - **tpa.rtp**  
   Allows using the `/rtp` command for random teleportation (permission check is disabled by default).
 
@@ -132,7 +156,7 @@ A simple teleportation plugin that supports **Folia**, compatible with **Bukkit/
 ## About Configuration Migration
 
 Version 3.2.0 added automatic migration for old configuration files, so there is no need to worry.  
-However, for safety reasons, the old configuration files will be automatically backed up to the `plugins/TPA/backup/old version number` directory. If the migration fails, please manually attempt to migrate the configuration files.
+However, for safety reasons, the old configuration files will be automatically backed up to the `plugins/PMS-TPA/backup/old version number` directory. If the migration fails, please manually attempt to migrate the configuration files.
 
 ## Acknowledgments
 

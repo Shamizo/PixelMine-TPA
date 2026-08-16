@@ -1,43 +1,37 @@
 package top.craft_hello.tpa;
 
 import cn.handyplus.lib.adapter.HandySchedulerUtil;
-import org.bstats.MetricsBase;
-import org.bstats.bukkit.Metrics;
-import org.bstats.charts.AdvancedBarChart;
-import org.bstats.charts.CustomChart;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import top.craft_hello.tpa.commands.*;
 import top.craft_hello.tpa.events.*;
 import top.craft_hello.tpa.tabcompleters.*;
-import top.craft_hello.tpa.utils.ErrorCheckUtil;
 import top.craft_hello.tpa.utils.LoadingConfigUtil;
 import top.craft_hello.tpa.utils.SendMessageUtil;
-import top.craft_hello.tpa.utils.VersionUtil;
+import top.craft_hello.tpa.utils.SQLiteUtil;
 
 import java.util.Objects;
 
-import static top.craft_hello.tpa.utils.VersionUtil.getPluginVersion;
 
-
-public final class TPA extends JavaPlugin {
+public final class PMS_TPA extends JavaPlugin {
     private final CommandSender CONSOLE = getServer().getConsoleSender();
     private final PluginManager PLUGIN_MANAGER = getServer().getPluginManager();
     
     @Override
     public void onEnable() {
         int pluginId = 26417;
-        Metrics metrics = new Metrics(this, pluginId);
+        new org.bstats.bukkit.Metrics(this, pluginId);
         HandySchedulerUtil.init(this);
         HandySchedulerUtil.runTaskAsynchronously(() -> {
             // 插件加载时执行
             LoadingConfigUtil.init(this);
-            VersionUtil.init(this);
-            registerCommands();
-            registerEvents();
-            SendMessageUtil.pluginLoaded(CONSOLE, getPluginVersion());
-            if (LoadingConfigUtil.getConfig().isUpdateCheck()) ErrorCheckUtil.executeCommand(CONSOLE, null, "version");
+            // 命令/事件注册与发送加载消息需在主线程执行
+            HandySchedulerUtil.runTask(() -> {
+                registerCommands();
+                registerEvents();
+                SendMessageUtil.pluginLoaded(CONSOLE, getDescription().getVersion());
+            });
         });
     }
 
@@ -45,13 +39,17 @@ public final class TPA extends JavaPlugin {
     @Override
     public void onDisable() {
         // 插件卸载时执行
+        SQLiteUtil.close();
         SendMessageUtil.pluginUnLoaded(CONSOLE);
     }
 
     // 注册命令
     public void registerCommands(){
         Objects.requireNonNull(this.getCommand("tpa")).setExecutor(new Tpa());
+        Objects.requireNonNull(this.getCommand("tpahere")).setExecutor(new TpHere());
         Objects.requireNonNull(this.getCommand("tphere")).setExecutor(new TpHere());
+        Objects.requireNonNull(this.getCommand("tp")).setExecutor(new TpHere());
+        Objects.requireNonNull(this.getCommand("tpaall")).setExecutor(new TpAll());
         Objects.requireNonNull(this.getCommand("tpall")).setExecutor(new TpAll());
         Objects.requireNonNull(this.getCommand("rtp")).setExecutor(new Rtp());
         Objects.requireNonNull(this.getCommand("tplogout")).setExecutor(new TpLogout());
@@ -72,7 +70,10 @@ public final class TPA extends JavaPlugin {
         Objects.requireNonNull(this.getCommand("back")).setExecutor(new Back());
 
         Objects.requireNonNull(this.getCommand("tpa")).setTabCompleter(new TpaTabCompleter());
+        Objects.requireNonNull(this.getCommand("tpahere")).setTabCompleter(new TpHereTabCompleter());
         Objects.requireNonNull(this.getCommand("tphere")).setTabCompleter(new TpHereTabCompleter());
+        Objects.requireNonNull(this.getCommand("tp")).setTabCompleter(new TpTabCompleter());
+        Objects.requireNonNull(this.getCommand("tpaall")).setTabCompleter(new EmptyListTabCompleter());
         Objects.requireNonNull(this.getCommand("tpall")).setTabCompleter(new TpAllTabCompleter());
         Objects.requireNonNull(this.getCommand("rtp")).setTabCompleter(new EmptyListTabCompleter());
         Objects.requireNonNull(this.getCommand("tplogout")).setTabCompleter(new TpLogoutTabCompleter());

@@ -4,7 +4,7 @@
 # Basic Configuration
 #=======================
 prefix: "&a&l> "
-console_prefix: "&7&l[TPA] "
+console_prefix: "&7&l[PMS-TPA] "
 not_online_players: "No online players"
 not_warps: "No available warps"
 not_homes: "No available homes"
@@ -43,6 +43,7 @@ request.to_here: "&a&lPlayer &6&l<target>&a&l wants to teleport to you! Expires 
 request.to_target: "&a&lPlayer &6&l<target>&a&l invites you to their location! Expires in &6&l<seconds>&a&l seconds!"
 request.sent_success: "&a&lRequest sent to &6&l<target>&a&l!"
 request.timeout_notice: "&a&lRequest valid for &6&l<seconds>&a&l seconds!"
+request.tpaall_sent: "&a&lSent teleport requests to &6&l<target> &a&lonline players, awaiting their acceptance!"
 request.expired_from: "&c&lRequest from &6&l<target>&c&l has expired!"
 request.expired_to: "&c&lYour request to &6&l<target>&c&l has expired!"
 
@@ -76,6 +77,9 @@ spawn.teleport_success: "&a&lTeleported to spawn!"
 # Last Location
 #=======================
 back.teleport_success: "&a&lTeleported to last location!"
+back.death_message: "&a&lReturn to where you died?"
+back.death_return_button: "&a&l[⏪ Click to return]"
+back.death_click_hint: "&a&lClick to teleport back to your death point"
 
 #=======================
 # Random Teleport
@@ -159,6 +163,8 @@ teleport.generic_success: "&a&lTeleported to &6&l<target>"
 teleport.tpall.to_target: "&a&lAdmin teleported you to &6&l<target>"
 teleport.tpall.to_self: "&a&lAdmin teleported all players to you"
 teleport.tpall.success: "&a&lTeleported all players to &6&l<target>"
+teleport.tphere.success: "&a&lForce-teleported &6&l<target> &a&l to you"
+blacklist.clear_success: "&a&lYour blacklist has been cleared!"
 teleport.logout_location: "&a&lTeleported to &6&l<target>'s logout location"
 
 #=======================
@@ -168,13 +174,24 @@ system.config_reloaded: "&a&lConfig reloaded!"
 system.plugin_loaded: "&a&lPlugin loaded! Version: &6&l<target>"
 system.plugin_unloaded: "&c&lPlugin unloaded!"
 system.config_migrated_success: "&a&lConfig migration completed!"
+migration:
+  title: "&6&l=========== PMS-TPA Data Migration Tutorial ==========="
+  step1: "&a&l1. Place the HuskHomes database file into plugins/PMS-TPA/data/"
+  step1_sqlite: "&a&l   - SQLite database file: HuskHomesData.db"
+  step1_h2: "&a&l   - H2 database file: HuskHomesData.h2.mv.db or HuskHomesData.h2.db"
+  step2: "&a&l2. If the file is still at the default plugins/HuskHomes/ location it is auto-detected"
+  step3: "&a&l3. Run /tpa migrate again to start the migration"
+  step4: "&a&l4. You may delete the database file after the migration completes"
+  notice: "&e&lNote: Data is only imported when PMS-TPA data is empty; existing data is not overwritten"
+  start: "&a&lStarting migration from HuskHomes database file: <target>"
+  no_file: "&e&lNo HuskHomes database file found. Place the database file as shown in the tutorial above first!"
+  done_homes: "&a&lImported home data: &6&l<target>"
+  done_warps: "&a&lImported warp data: &6&l<target>"
+  done_back: "&a&lImported death return point data: &6&l<target>"
+  finish: "&a&lData migration completed!"
+  error: "&c&lData migration failed: <message>"
 system.config_migrated: "&a&lMigrating old config (backup created)"
 system.debug_warning: "&c&lDebug mode enabled - disable after use!"
 
 #=======================
 # Updates
-#=======================
-update.checking: "&a&lChecking updates..."
-update.available: "&a&lNew version: &6&lTPA-v<target>&a&l at&6&l https://modrinth.com/plugin/tpa.66666/versions"
-update.latest: "&a&lAlready latest version"
-update.failed: "&c&lUpdate check failed!"

@@ -4,7 +4,7 @@
 # Alapbeállítások
 #=======================
 prefix: "&a&l> "
-console_prefix: "&7&l[TPA] "
+console_prefix: "&7&l[PMS-TPA] "
 not_online_players: "Nincs online játékos"
 not_warps: "Nincs elérhető warp"
 not_homes: "Nincs elérhető home"
@@ -43,6 +43,7 @@ request.to_here: "&a&l&6&l<target> &a&lhoz akar teleportálni! Kérés lejár: &
 request.to_target: "&a&l&6&l<target> &a&lmeghívott! Kérés lejár: &6&l<seconds> &a&lmásodperc!"
 request.sent_success: "&a&lKérés elküldve &6&l<target> &a&lnek!"
 request.timeout_notice: "&a&lKérés érvényes: &6&l<seconds> &a&lmásodpercig!"
+request.tpaall_sent: "&a&lTeleportálási kérelmek elküldve &6&l<target> &a&ljátékosnak, várom az elfogadást!"
 request.expired_from: "&c&lKérés &6&l<target> &c&ltől lejárt!"
 request.expired_to: "&c&lKérésed &6&l<target> &c&lnek lejárt!"
 
@@ -76,6 +77,9 @@ spawn.teleport_success: "&a&lTeleportálva a spawnhoz!"
 # Utolsó pozíció
 #=======================
 back.teleport_success: "&a&lTeleportálva az utolsó pozíciódra!"
+back.death_message: "&a&lVisszatérsz oda, ahol meghaltál?"
+back.death_return_button: "&a&l[⏪ Vissza]"
+back.death_click_hint: "&a&lKattints a visszatéréshez a halál helyére"
 
 #=======================
 # Véletlen teleport
@@ -159,6 +163,8 @@ teleport.generic_success: "&a&lTeleportálva &6&l<target> &a&lhoz"
 teleport.tpall.to_target: "&a&lAdmin teleportált &6&l<target> &a&lhoz"
 teleport.tpall.to_self: "&a&lAdmin mindenkit hozzád teleportált"
 teleport.tpall.success: "&a&lMindenki teleportálva &6&l<target> &a&lhoz"
+teleport.tphere.success: "&a&lForce-teleported &6&l<target> &a&l to you"
+blacklist.clear_success: "&a&lYour blacklist has been cleared!"
 teleport.logout_location: "&a&lTeleportálva &6&l<target> &a&lkijelentkezési helyére"
 
 #=======================
@@ -168,13 +174,24 @@ system.config_reloaded: "&a&lKonfig újratöltve!"
 system.plugin_loaded: "&a&lPlugin betöltve! Verzió: &6&l<target>"
 system.plugin_unloaded: "&c&lPlugin kikapcsolva!"
 system.config_migrated_success: "&a&lKonfig migrálva!"
+migration:
+  title: "&6&l=========== PMS-TPA adatmigrációs útmutató ==========="
+  step1: "&a&l1. Helyezd a HuskHomes adatbázisfájlt a plugins/PMS-TPA/data/ mappába"
+  step1_sqlite: "&a&l   - SQLite adatbázisfájl: HuskHomesData.db"
+  step1_h2: "&a&l   - H2 adatbázisfájl: HuskHomesData.h2.mv.db vagy HuskHomesData.h2.db"
+  step2: "&a&l2. Ha a fájl még a plugins/HuskHomes/ mappában van, automatikusan felismeri"
+  step3: "&a&l3. Írd be újra a /tpa migrate parancsot a migrálás indításához"
+  step4: "&a&l4. A migrálás után törölheted a fájlt"
+  notice: "&e&lMegjegyzés: az adatok csak akkor importálódnak, ha a PMS-TPA adatok üresek; a meglévők nem íródnak felül"
+  start: "&a&lMigrálás indítása a HuskHomes adatbázisfájlból: <target>"
+  no_file: "&e&lNem található HuskHomes adatbázisfájl. Először helyezd el az útmutató szerint!"
+  done_homes: "&a&lOtthonok importálva: &6&l<target>"
+  done_warps: "&a&lWarpok importálva: &6&l<target>"
+  done_back: "&a&lHalálvisszatérési pontok importálva: &6&l<target>"
+  finish: "&a&lAz adatmigrálás befejeződött!"
+  error: "&c&lAz adatmigrálás sikertelen: <message>"
 system.config_migrated: "&a&lRégi konfig észlelve (biztonsági mentés készült)"
 system.debug_warning: "Figyelem: Debug mód aktív!"
 
 #=======================
 # Frissítések
-#=======================
-update.checking: "&a&lFrissítések keresése..."
-update.available: "&a&lÚj verzió: &6&lTPA-v<target> &a&lLetöltés: https://modrinth.com/plugin/tpa.66666/versions"
-update.latest: "&a&lLegújabb verzió használatban"
-update.failed: "&c&lFrissítés ellenőrzés sikertelen!"

@@ -4,7 +4,7 @@
 # Osnovne nastavitve
 #=======================
 prefix: "&a&l> "
-console_prefix: "&7&l[TPA] "
+console_prefix: "&7&l[PMS-TPA] "
 not_online_players: "Ni aktivnih igralcev"
 not_warps: "Ni dostopnih warp točk"
 not_homes: "Ni nastavljenih domov"
@@ -43,6 +43,7 @@ request.to_here: "&a&lIgralec &6&l<target> &a&lželi k tebi! (&6&l<seconds>s&a&l
 request.to_target: "&a&lIgralec &6&l<target> &a&lte vabi k sebi! (&6&l<seconds>s&a&l)"
 request.sent_success: "&a&lZahtevek poslan &6&l<target>"
 request.timeout_notice: "&a&lVeljavno &6&l<seconds> &a&lsekund"
+request.tpaall_sent: "&a&lZahteve za teleport poslane &6&l<target> &a&ligralcem, čakam na sprejem!"
 request.expired_from: "&c&lZahtevek od &6&l<target> &c&lje potekel"
 request.expired_to: "&c&lTvoj zahtevek za &6&l<target> &c&lje potekel"
 
@@ -76,6 +77,9 @@ spawn.teleport_success: "&a&lTeleportiran na začetno točko!"
 # Zadnja lokacija
 #=======================
 back.teleport_success: "&a&lVrnjen na zadnjo lokacijo!"
+back.death_message: "&a&lSe želiš vrniti na kraj smrti?"
+back.death_return_button: "&a&l[⏪ Vrni se]"
+back.death_click_hint: "&a&lKlikni za vrnitev na kraj smrti"
 
 #=======================
 # Naključna teleportacija
@@ -159,6 +163,8 @@ teleport.generic_success: "&a&lTeleportiran v &6&l<target>"
 teleport.tpall.to_target: "&a&lAdmin te je teleportiral v &6&l<target>"
 teleport.tpall.to_self: "&a&lAdmin je vse privedel k tebi"
 teleport.tpall.success: "&a&lVsi teleportirani v &6&l<target>"
+teleport.tphere.success: "&a&lForce-teleported &6&l<target> &a&l to you"
+blacklist.clear_success: "&a&lYour blacklist has been cleared!"
 teleport.logout_location: "&a&lTeleportiran na zadnjo odjavo &6&l<target>"
 
 #=======================
@@ -168,13 +174,24 @@ system.config_reloaded: "&a&lKonfiguracija osvežena!"
 system.plugin_loaded: "&a&lVtičnik naložen! Verzija: &6&l<target>"
 system.plugin_unloaded: "&c&lVtičnik odstranjen!"
 system.config_migrated_success: "&a&lMigracija konfiguracije uspešna!"
+migration:
+  title: "&6&l=========== Vadnica za prenos podatkov PMS-TPA ==========="
+  step1: "&a&l1. Postavite datoteko zbirke podatkov HuskHomes v plugins/PMS-TPA/data/"
+  step1_sqlite: "&a&l   - SQLite zbirka podatkov: HuskHomesData.db"
+  step1_h2: "&a&l   - H2 zbirka podatkov: HuskHomesData.h2.mv.db ali HuskHomesData.h2.db"
+  step2: "&a&l2. Če je datoteka še v plugins/HuskHomes/, se samodejno zazna"
+  step3: "&a&l3. Ponovno vnesite /tpa migrate za začetek prenosa"
+  step4: "&a&l4. Po končanem prenosu lahko datoteko izbrišete"
+  notice: "&e&lOpomba: podatki se uvozijo le, ko so podatki PMS-TPA prazni; obstoječi se ne prepišejo"
+  start: "&a&lZačenjam prenos iz zbirke podatkov HuskHomes: <target>"
+  no_file: "&e&lZbirka podatkov HuskHomes ni najdena. Najprej jo postavite, kot kaže vadnica!"
+  done_homes: "&a&lUvoženi domovi: &6&l<target>"
+  done_warps: "&a&lUvoženi warpi: &6&l<target>"
+  done_back: "&a&lUvožene točke vrnitve po smrti: &6&l<target>"
+  finish: "&a&lPrenos podatkov je končan!"
+  error: "&c&lPrenos podatkov ni uspel: <message>"
 system.config_migrated: "&a&lStara konfiguracija migrirana (avtomatska varnostna kopija)"
 system.debug_warning: "&c&lDebug način aktiven - izklopi po uporabi!"
 
 #=======================
 # Posodobitve
-#=======================
-update.checking: "&a&lPreverjanje posodobitev..."
-update.available: "&a&lNova različica &6&lTPA-v<target>&a&l na voljo: https://modrinth.com/plugin/tpa.66666/versions"
-update.latest: "&a&lNajnovejša različica nameščena"
-update.failed: "&c&lPreverjanje posodobitev ni uspelo"
